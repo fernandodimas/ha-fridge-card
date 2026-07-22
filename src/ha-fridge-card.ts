@@ -13,30 +13,35 @@ type Layout = (typeof LAYOUTS)[number];
 
 type Zone = { x: number; y: number; width: number; height: number };
 
-function computeZones(layout: Layout, ratio: number): { freezer?: Zone; fridge?: Zone } {
-  const H = 365;
+function computeZones(layout: Layout): { freezer?: Zone; fridge?: Zone } {
+  const H = 363;
   const Y0 = 12;
-  const r = ratio / 100;
+  const X0 = 12;
+  const W0 = 168;
 
   switch (layout) {
     case "freezer":
-      return { freezer: { x: 16, y: Y0, width: 160, height: H } };
-    case "default":
+      return { freezer: { x: X0, y: Y0, width: W0, height: H } };
+    case "default": {
+      const r = 0.3;
       return {
-        freezer: { x: 16, y: Y0, width: 160, height: Math.round(H * r) },
-        fridge: { x: 16, y: Y0 + Math.round(H * r) + 2, width: 160, height: Math.round(H * (1 - r)) - 2 },
+        freezer: { x: X0, y: Y0, width: W0, height: Math.round(H * r) },
+        fridge: { x: X0, y: Y0 + Math.round(H * r) + 2, width: W0, height: Math.round(H * (1 - r)) - 2 },
       };
+    }
     case "inverted":
-    case "french_door":
+    case "french_door": {
+      const r = 0.3;
       return {
-        fridge: { x: 16, y: Y0, width: 160, height: Math.round(H * (1 - r)) - 2 },
-        freezer: { x: 16, y: Y0 + Math.round(H * (1 - r)), width: 160, height: Math.round(H * r) },
+        fridge: { x: X0, y: Y0, width: W0, height: Math.round(H * (1 - r)) - 2 },
+        freezer: { x: X0, y: Y0 + Math.round(H * (1 - r)), width: W0, height: Math.round(H * r) },
       };
+    }
     case "dual_door": {
-      const fw = Math.round(160 * r);
+      const fw = 82;
       return {
-        freezer: { x: 12, y: Y0, width: fw, height: H },
-        fridge: { x: 12 + fw + 4, y: Y0, width: 160 - fw, height: H },
+        freezer: { x: X0, y: Y0, width: fw, height: H },
+        fridge: { x: X0 + fw + 4, y: Y0, width: 164 - fw, height: H },
       };
     }
     default:
@@ -44,9 +49,8 @@ function computeZones(layout: Layout, ratio: number): { freezer?: Zone; fridge?:
   }
 }
 
-function buildSvg(layout: Layout, ratio: number): unknown {
-  const r = ratio / 100;
-  const H = 365;
+function buildSvg(layout: Layout): unknown {
+  const H = 363;
   const Y0 = 12;
 
   switch (layout) {
@@ -54,8 +58,8 @@ function buildSvg(layout: Layout, ratio: number): unknown {
       const cy = Y0 + Math.round(H / 2) - 26;
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
         <rect x="4" y="4" width="184" height="379" rx="12" fill="#ECEFF3" stroke="#C8CED6" stroke-width="1.5" />
-        <rect x="16" y="${Y0}" width="160" height="${H}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
-        <rect x="24" y="${Y0 + Math.round(H / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
+        <rect x="12" y="${Y0}" width="168" height="${H}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="20" y="${Y0 + Math.round(H / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
         <rect x="76" y="${cy}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="0.8" />
         <rect x="80" y="${cy + 4}" width="32" height="20" rx="3" fill="#2C2C3A" />
         <rect x="90" y="${cy + 28}" width="12" height="14" rx="2" fill="#8A919A" />
@@ -66,17 +70,18 @@ function buildSvg(layout: Layout, ratio: number): unknown {
     }
 
     case "default": {
+      const r = 0.3;
       const fh = Math.round(H * r);
       const fH = Math.round(H * (1 - r)) - 2;
       const sep = Y0 + fh;
       const cy = sep + 2 + Math.round(fH / 2) - 26;
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
         <rect x="4" y="4" width="184" height="379" rx="12" fill="#ECEFF3" stroke="#C8CED6" stroke-width="1.5" />
-        <rect x="16" y="${Y0}" width="160" height="${fh}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
-        <rect x="24" y="${Y0 + Math.round(fh / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
-        <rect x="14" y="${sep}" width="164" height="2" rx="1" fill="#D6DCE4" />
-        <rect x="16" y="${sep + 2}" width="160" height="${fH}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
-        <rect x="24" y="${sep + 2 + Math.round(fH / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
+        <rect x="12" y="${Y0}" width="168" height="${fh}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="20" y="${Y0 + Math.round(fh / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
+        <rect x="12" y="${sep}" width="168" height="2" rx="1" fill="#D6DCE4" />
+        <rect x="12" y="${sep + 2}" width="168" height="${fH}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="20" y="${sep + 2 + Math.round(fH / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
         <rect x="76" y="${cy}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="0.8" />
         <rect x="80" y="${cy + 4}" width="32" height="20" rx="3" fill="#2C2C3A" />
         <rect x="90" y="${cy + 28}" width="12" height="14" rx="2" fill="#8A919A" />
@@ -87,27 +92,29 @@ function buildSvg(layout: Layout, ratio: number): unknown {
     }
 
     case "inverted": {
+      const r = 0.3;
       const fH = Math.round(H * (1 - r)) - 2;
       const fh = Math.round(H * r);
       const sep = Y0 + fH;
       const cy = Y0 + Math.round(fH / 2) - 26;
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
         <rect x="4" y="4" width="184" height="379" rx="12" fill="#ECEFF3" stroke="#C8CED6" stroke-width="1.5" />
-        <rect x="16" y="${Y0}" width="160" height="${fH}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
-        <rect x="24" y="${Y0 + Math.round(fH / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
+        <rect x="12" y="${Y0}" width="168" height="${fH}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="20" y="${Y0 + Math.round(fH / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
         <rect x="76" y="${cy}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="0.8" />
         <rect x="80" y="${cy + 4}" width="32" height="20" rx="3" fill="#2C2C3A" />
         <rect x="90" y="${cy + 28}" width="12" height="14" rx="2" fill="#8A919A" />
         <rect x="86" y="${cy + 44}" width="20" height="5" rx="2" fill="#A0A8B4" />
-        <rect x="14" y="${sep}" width="164" height="2" rx="1" fill="#D6DCE4" />
-        <rect x="16" y="${sep + 2}" width="160" height="${fh}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
-        <rect x="24" y="${sep + 2 + Math.round(fh / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
+        <rect x="12" y="${sep}" width="168" height="2" rx="1" fill="#D6DCE4" />
+        <rect x="12" y="${sep + 2}" width="168" height="${fh}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="20" y="${sep + 2 + Math.round(fh / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
         <rect x="20" y="381" width="10" height="6" rx="2" fill="#C8CED6" />
         <rect x="162" y="381" width="10" height="6" rx="2" fill="#C8CED6" />
       </svg>`;
     }
 
     case "french_door": {
+      const r = 0.3;
       const fH = Math.round(H * (1 - r)) - 2;
       const fh = Math.round(H * r);
       const sep = Y0 + fH;
@@ -115,17 +122,17 @@ function buildSvg(layout: Layout, ratio: number): unknown {
       const cy = Y0 + Math.round(fH / 2) - 26;
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
         <rect x="4" y="4" width="184" height="379" rx="12" fill="#ECEFF3" stroke="#C8CED6" stroke-width="1.5" />
-        <rect x="16" y="${Y0}" width="${halfW}" height="${fH}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="12" y="${Y0}" width="${halfW}" height="${fH}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
         <rect x="82" y="${Y0 + Math.round(fH / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
-        <rect x="16" y="${cy}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="0.8" />
-        <rect x="20" y="${cy + 4}" width="32" height="20" rx="3" fill="#2C2C3A" />
-        <rect x="30" y="${cy + 28}" width="12" height="14" rx="2" fill="#8A919A" />
-        <rect x="26" y="${cy + 44}" width="20" height="5" rx="2" fill="#A0A8B4" />
-        <rect x="96" y="${Y0}" width="2" height="${fH}" rx="1" fill="#D6DCE4" />
-        <rect x="98" y="${Y0}" width="${halfW}" height="${fH}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
-        <rect x="158" y="${Y0 + Math.round(fH / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
-        <rect x="14" y="${sep}" width="164" height="2" rx="1" fill="#D6DCE4" />
-        <rect x="16" y="${sep + 2}" width="160" height="${fh}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="76" y="${cy}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="0.8" />
+        <rect x="80" y="${cy + 4}" width="32" height="20" rx="3" fill="#2C2C3A" />
+        <rect x="90" y="${cy + 28}" width="12" height="14" rx="2" fill="#8A919A" />
+        <rect x="86" y="${cy + 44}" width="20" height="5" rx="2" fill="#A0A8B4" />
+        <rect x="92" y="${Y0}" width="2" height="${fH}" rx="1" fill="#D6DCE4" />
+        <rect x="96" y="${Y0}" width="${halfW}" height="${fH}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="100" y="${Y0 + Math.round(fH / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
+        <rect x="12" y="${sep}" width="168" height="2" rx="1" fill="#D6DCE4" />
+        <rect x="12" y="${sep + 2}" width="168" height="${fh}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
         <rect x="76" y="${sep + 10}" width="36" height="4" rx="2" fill="#B0B8C4" />
         <rect x="20" y="381" width="10" height="6" rx="2" fill="#C8CED6" />
         <rect x="162" y="381" width="10" height="6" rx="2" fill="#C8CED6" />
@@ -133,20 +140,20 @@ function buildSvg(layout: Layout, ratio: number): unknown {
     }
 
     case "dual_door": {
-      const fw = Math.round(160 * r);
-      const lw = 160 - fw;
-      const lx = 12 + fw + 4;
+      const fw = 82;
+      const lw = 164 - fw;
+      const lx = X0 + fw + 4;
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
         <rect x="4" y="4" width="184" height="379" rx="12" fill="#ECEFF3" stroke="#C8CED6" stroke-width="1.5" />
-        <rect x="12" y="${Y0}" width="${fw}" height="${H}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
-        <rect x="${lx - 6}" y="${Y0 + Math.round(H / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
-        <rect x="${12 + Math.round(fw / 2) - 20}" y="${Y0 + 40}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="0.8" />
-        <rect x="${12 + Math.round(fw / 2) - 16}" y="${Y0 + 44}" width="32" height="20" rx="3" fill="#2C2C3A" />
-        <rect x="${12 + Math.round(fw / 2) - 6}" y="${Y0 + 68}" width="12" height="14" rx="2" fill="#8A919A" />
-        <rect x="${12 + Math.round(fw / 2) - 10}" y="${Y0 + 84}" width="20" height="5" rx="2" fill="#A0A8B4" />
+        <rect x="${X0}" y="${Y0}" width="${fw}" height="${H}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="${lx - 4}" y="${Y0 + Math.round(H / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
+        <rect x="${X0 + Math.round(fw / 2) - 20}" y="${Y0 + 40}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="0.8" />
+        <rect x="${X0 + Math.round(fw / 2) - 16}" y="${Y0 + 44}" width="32" height="20" rx="3" fill="#2C2C3A" />
+        <rect x="${X0 + Math.round(fw / 2) - 6}" y="${Y0 + 68}" width="12" height="14" rx="2" fill="#8A919A" />
+        <rect x="${X0 + Math.round(fw / 2) - 10}" y="${Y0 + 84}" width="20" height="5" rx="2" fill="#A0A8B4" />
         <rect x="${lx - 2}" y="${Y0}" width="2" height="${H}" rx="1" fill="#D6DCE4" />
         <rect x="${lx}" y="${Y0}" width="${lw}" height="${H}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
-        <rect x="${lx + 2}" y="${Y0 + Math.round(H / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
+        <rect x="${lx + 4}" y="${Y0 + Math.round(H / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
         <rect x="20" y="381" width="10" height="6" rx="2" fill="#C8CED6" />
         <rect x="162" y="381" width="10" height="6" rx="2" fill="#C8CED6" />
       </svg>`;
@@ -199,18 +206,6 @@ export class HaFridgeCard extends LitElement {
         { name: "fridge_entity", selector: { entity: { domain: "sensor" } } },
         { name: "freezer_label", selector: { text: {} } },
         { name: "fridge_label", selector: { text: {} } },
-        {
-          name: "split_ratio",
-          selector: { number: { min: 20, max: 80, step: 1, mode: "slider", unit_of_measurement: "%" } },
-        },
-        {
-          name: "card_width",
-          selector: { number: { min: 100, max: 400, step: 10, mode: "slider", unit_of_measurement: "px" } },
-        },
-        {
-          name: "card_height",
-          selector: { number: { min: 200, max: 600, step: 10, mode: "slider", unit_of_measurement: "px" } },
-        },
       ],
       computeLabel: (schema: { name: string }) => {
         switch (schema.name) {
@@ -228,12 +223,6 @@ export class HaFridgeCard extends LitElement {
             return "Freezer label";
           case "fridge_label":
             return "Fridge label";
-          case "split_ratio":
-            return "Freezer / Fridge ratio";
-          case "card_width":
-            return "Width";
-          case "card_height":
-            return "Height";
           default:
             return undefined;
         }
@@ -269,18 +258,13 @@ export class HaFridgeCard extends LitElement {
     return 4;
   }
 
-  getGridOptions() {
-    return { columns: 6, rows: 4, min_columns: 4 };
-  }
-
   // ── Render ─────────────────────────────────────────────────────────────────
 
   render() {
     if (!this._config) return nothing;
 
     const layout = this.normalizeLayout(this._config.layout as string | undefined);
-    const ratio = (this._config.split_ratio as number) ?? 30;
-    const zones = computeZones(layout, ratio);
+    const zones = computeZones(layout);
     const showTitle = this._config.show_title !== "false" && this._config.show_title !== false;
     const showFreezer = true;
     const showFridge = Boolean(zones.fridge);
@@ -294,8 +278,6 @@ export class HaFridgeCard extends LitElement {
 
     const freezerLabel = (this._config.freezer_label as string) || "Freezer";
     const fridgeLabel = (this._config.fridge_label as string) || "Fridge";
-    const cardWidth = (this._config.card_width as number) || 230;
-    const cardHeight = (this._config.card_height as number) || 387;
 
     return html`
       <ha-card>
@@ -307,8 +289,8 @@ export class HaFridgeCard extends LitElement {
           ` : nothing}
           <div class="body">
             <div class="fridge layout-${layout}" role="img" aria-label=${cardLabel}>
-              <div class="fridge-photo-frame" style="width:${cardWidth}px;height:${cardHeight}px;">
-                ${buildSvg(layout, ratio)}
+              <div class="fridge-photo-frame">
+                ${buildSvg(layout)}
                 <div class="readings">
                   ${showFreezer && zones.freezer
                     ? html`
@@ -357,20 +339,17 @@ export class HaFridgeCard extends LitElement {
     return displayState.isPlaceholder ? "temperature placeholder" : "temperature";
   }
 
-  private cardLabel(showFreezer: boolean, showFridge: boolean) {
-    if (showFreezer && showFridge) return "Fridge and freezer temperatures";
-    if (showFreezer) return "Freezer temperature";
-    return "Fridge temperature";
-  }
-
-  private normalizeLayout(layout: string | undefined): Layout {
-    if (layout && (LAYOUTS as readonly string[]).includes(layout)) return layout as Layout;
+  private normalizeLayout(raw: string | undefined): Layout {
+    if (raw && (LAYOUTS as readonly string[]).includes(raw)) {
+      return raw as Layout;
+    }
     return "default";
   }
 
-  private readingStyle(zone: { x: number; y: number; width: number; height: number }) {
+  private readingStyle(zone: Zone) {
+    if (!zone) return "";
     const left = ((zone.x + zone.width / 2) / VIEWBOX_WIDTH) * 100;
-    const top = ((zone.y + 20) / VIEWBOX_HEIGHT) * 100;
+    const top = ((zone.y + zone.height / 2) / VIEWBOX_HEIGHT) * 100;
     return `left:${left}%;top:${top}%;`;
   }
 
@@ -380,7 +359,7 @@ export class HaFridgeCard extends LitElement {
     isPlaceholder: boolean;
   } {
     if (!entityId) {
-      return { stateText: "--", unitText: "°C", isPlaceholder: true };
+      return { stateText: "--", unitText: "\u00B0C", isPlaceholder: true };
     }
     const entity = this._hass?.states?.[entityId];
     if (!entity) {
@@ -405,12 +384,19 @@ export class HaFridgeCard extends LitElement {
     return { stateText: rawState, unitText: unit, isPlaceholder: false };
   }
 
-  private getUnit(entity: any) {
+  private getUnit(entity: any): string {
     const unit = entity.attributes.unit_of_measurement;
-    return typeof unit === "string" && unit.trim() ? unit : "°C";
+    return typeof unit === "string" && unit.trim() ? unit : "\u00B0C";
   }
 
-  // ── Styles ─────────────────────────────────────────────────────────────────
+  private cardLabel(showFreezer: boolean, showFridge: boolean): string {
+    if (showFreezer && showFridge) return "Fridge and freezer temperatures";
+    if (showFreezer) return "Freezer temperature";
+    if (showFridge) return "Fridge temperature";
+    return "Fridge card";
+  }
+
+  // ── Styles ────────────────────────────────────────────────────────────────
 
   static get styles() {
     return css`
@@ -419,116 +405,131 @@ export class HaFridgeCard extends LitElement {
       }
 
       ha-card {
-        border-radius: 18px;
+        position: relative;
         overflow: hidden;
+        padding: 20px 18px 18px;
       }
 
       .card-shell {
         display: grid;
-        grid-template-rows: auto 1fr;
         gap: 18px;
-        padding: 18px;
-        background: var(--card-background-color, #fff);
       }
 
       .heading {
         display: flex;
-        justify-content: space-between;
         align-items: center;
+        justify-content: center;
+        gap: 12px;
       }
 
       .title {
         margin: 0;
-        font-size: 1.2em;
+        color: var(--primary-text-color);
+        font-size: 1rem;
         font-weight: 600;
-        color: var(--primary-text-color, #212121);
+        letter-spacing: 0.01em;
+        text-align: center;
       }
 
       .body {
-        display: flex;
-        justify-content: center;
+        display: grid;
+        place-items: center;
       }
 
       .fridge {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
+        position: relative;
+        color: #132030;
       }
 
       .fridge-photo-frame {
         position: relative;
+        width: min(100%, 192px);
+        height: 387px;
         border-radius: 18px 18px 12px 12px;
-        background: var(--card-background-color, #fff);
-        box-shadow:
-          0 1px 3px rgba(0, 0, 0, 0.08),
-          0 4px 12px rgba(0, 0, 0, 0.06);
         overflow: hidden;
+        background: rgba(255, 255, 255, 0.92);
+        box-shadow:
+          0 12px 30px rgba(0, 0, 0, 0.16),
+          inset 0 0 0 1px rgba(116, 135, 158, 0.12);
       }
 
       .fridge-svg {
-        display: block;
         width: 100%;
         height: 100%;
+        display: block;
       }
 
       .readings {
         position: absolute;
         inset: 0;
+        pointer-events: none;
       }
 
       .reading {
         position: absolute;
+        width: 96px;
         transform: translate(-50%, -50%);
-        text-align: center;
-        padding: 6px 10px;
-        border-radius: 10px;
-        backdrop-filter: blur(6px);
-        -webkit-backdrop-filter: blur(6px);
-        background: rgba(255, 255, 255, 0.35);
-        border: 1px solid rgba(255, 255, 255, 0.45);
-        pointer-events: none;
+        display: grid;
+        justify-items: center;
+        gap: 6px;
+        padding: 8px 10px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.55);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
       }
 
       .section-label {
-        margin: 0 0 2px;
-        font-size: 0.6em;
+        margin: 0;
+        color: rgba(19, 32, 48, 0.72);
+        font-size: 0.52rem;
         font-weight: 600;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
-        letter-spacing: 0.04em;
-        opacity: 0.7;
-      }
-
-      .zone-freezer .section-label {
-        color: #0f3f75;
-      }
-
-      .zone-fridge .section-label {
-        color: #125b6d;
+        text-shadow: 0 1px 1px rgba(255, 255, 255, 0.55);
       }
 
       .temperature {
-        font-size: 1.1em;
+        display: inline-flex;
+        align-items: flex-start;
+        gap: 4px;
+        color: #102031;
+        font-size: clamp(1.45rem, 4vw, 1.95rem);
         font-weight: 700;
-        line-height: 1.2;
-      }
-
-      .zone-freezer .temperature {
-        color: #0f3f75;
-      }
-
-      .zone-fridge .temperature {
-        color: #125b6d;
-      }
-
-      .temperature .unit {
-        font-size: 0.65em;
-        font-weight: 500;
-        margin-left: 1px;
+        line-height: 0.95;
+        letter-spacing: -0.03em;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
       }
 
       .temperature.placeholder {
-        opacity: 0.35;
+        color: rgba(16, 32, 49, 0.42);
+      }
+
+      .unit {
+        color: rgba(16, 32, 49, 0.7);
+        font-size: 0.92rem;
+        font-weight: 600;
+        letter-spacing: 0;
+        transform: translateY(0.22rem);
+      }
+
+      .reading.zone-freezer .temperature {
+        color: #0f3f75;
+      }
+
+      .reading.zone-fridge .temperature {
+        color: #125b6d;
+      }
+
+      @media (max-width: 420px) {
+        ha-card {
+          padding-inline: 14px;
+        }
+
+        .fridge-photo-frame {
+          width: min(100%, 176px);
+          height: 356px;
+        }
       }
     `;
   }
