@@ -121,14 +121,15 @@ function buildSvg(layout: Layout): unknown {
       const sep = Y0 + fH;
       const halfW = 78;
       const cy = Y0 + Math.round(fH / 2) - 26;
+      const dcx = X0 + Math.round(halfW / 2) - 20;
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
         <rect x="4" y="4" width="184" height="379" rx="12" fill="#ECEFF3" stroke="#C8CED6" stroke-width="1.5" />
         <rect x="12" y="${Y0}" width="${halfW}" height="${fH}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
         <rect x="82" y="${Y0 + Math.round(fH / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
-        <rect x="76" y="${cy}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="0.8" />
-        <rect x="80" y="${cy + 4}" width="32" height="20" rx="3" fill="#2C2C3A" />
-        <rect x="90" y="${cy + 28}" width="12" height="14" rx="2" fill="#8A919A" />
-        <rect x="86" y="${cy + 44}" width="20" height="5" rx="2" fill="#A0A8B4" />
+        <rect x="${dcx}" y="${cy}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="0.8" />
+        <rect x="${dcx + 4}" y="${cy + 4}" width="32" height="20" rx="3" fill="#2C2C3A" />
+        <rect x="${dcx + 14}" y="${cy + 28}" width="12" height="14" rx="2" fill="#8A919A" />
+        <rect x="${dcx + 10}" y="${cy + 44}" width="20" height="5" rx="2" fill="#A0A8B4" />
         <rect x="92" y="${Y0}" width="2" height="${fH}" rx="1" fill="#D6DCE4" />
         <rect x="96" y="${Y0}" width="${halfW}" height="${fH}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
         <rect x="100" y="${Y0 + Math.round(fH / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
@@ -296,7 +297,8 @@ export class HaFridgeCard extends LitElement {
                   ${showFreezer && zones.freezer
                     ? html`
                         <section class="reading zone-freezer"
-                          style=${this.readingStyle(zones.freezer)}>
+                          style=${this.readingStyle(zones.freezer)}
+                          @click=${() => this.showMoreInfo(this._config?.freezer_entity as string)}>
                           <p class="section-label">${freezerLabel}</p>
                           <div class=${this.temperatureClass(freezer)}>
                             <span>${freezer.stateText}</span>
@@ -310,7 +312,8 @@ export class HaFridgeCard extends LitElement {
                   ${showFridge && zones.fridge
                     ? html`
                         <section class="reading zone-fridge"
-                          style=${this.readingStyle(zones.fridge)}>
+                          style=${this.readingStyle(zones.fridge)}
+                          @click=${() => this.showMoreInfo(this._config?.fridge_entity as string)}>
                           <p class="section-label">${fridgeLabel}</p>
                           <div class=${this.temperatureClass(fridge)}>
                             <span>${fridge.stateText}</span>
@@ -350,7 +353,7 @@ export class HaFridgeCard extends LitElement {
   private readingStyle(zone: Zone) {
     if (!zone) return "";
     const left = ((zone.x + zone.width / 2) / VIEWBOX_WIDTH) * 100;
-    const top = ((zone.y + zone.height / 2) / VIEWBOX_HEIGHT) * 100;
+    const top = (zone.y / VIEWBOX_HEIGHT) * 100;
     return `left:${left}%;top:${top}%;`;
   }
 
@@ -395,6 +398,17 @@ export class HaFridgeCard extends LitElement {
     if (showFreezer) return "Freezer temperature";
     if (showFridge) return "Fridge temperature";
     return "Fridge card";
+  }
+
+  private showMoreInfo(entityId: string) {
+    if (!entityId) return;
+    this.dispatchEvent(
+      new CustomEvent("hass-more-info", {
+        bubbles: true,
+        composed: true,
+        detail: { entityId },
+      })
+    );
   }
 
   // ── Styles ────────────────────────────────────────────────────────────────
@@ -469,15 +483,16 @@ export class HaFridgeCard extends LitElement {
       .reading {
         position: absolute;
         width: 96px;
-        transform: translate(-50%, -50%);
+        transform: translateX(-50%);
         display: grid;
         justify-items: center;
         gap: 6px;
-        padding: 8px 10px;
+        padding: 10px 10px 8px;
         border-radius: 14px;
         background: rgba(255, 255, 255, 0.55);
         backdrop-filter: blur(4px);
         -webkit-backdrop-filter: blur(4px);
+        cursor: pointer;
       }
 
       .section-label {

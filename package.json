@@ -1,6 +1,6 @@
 {
   "name": "ha-fridge-card",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Home Assistant Lovelace card for fridge and freezer temperatures",
   "type": "module",
   "scripts": {
