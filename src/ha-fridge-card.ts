@@ -301,8 +301,8 @@ export class HaFridgeCard extends LitElement {
     const layout = this.normalizeLayout(this._config.layout as string | undefined);
     const ratio = (this._config.split_ratio as number) ?? 30;
     const zones = computeZones(layout, ratio);
-    const showTitle = this._config.show_title !== "false";
-    const showDispenser = this._config.show_dispenser === "true";
+    const showTitle = this._config.show_title !== "false" && this._config.show_title !== false;
+    const showDispenser = this._config.show_dispenser === "true" || this._config.show_dispenser === true;
     const showFreezer = true;
     const showFridge = Boolean(zones.fridge);
 
@@ -391,7 +391,7 @@ export class HaFridgeCard extends LitElement {
 
   private readingStyle(zone: { x: number; y: number; width: number; height: number }) {
     const left = ((zone.x + zone.width / 2) / VIEWBOX_WIDTH) * 100;
-    const top = ((zone.y + zone.height / 2) / VIEWBOX_HEIGHT) * 100;
+    const top = ((zone.y + 20) / VIEWBOX_HEIGHT) * 100;
     return `left:${left}%;top:${top}%;`;
   }
 
