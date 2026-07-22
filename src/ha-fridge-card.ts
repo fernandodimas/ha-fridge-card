@@ -57,15 +57,11 @@ function buildSvg(layout: Layout, ratio: number, dispenser: boolean): unknown {
   const line = (x1: number, y1: number, x2: number, y2: number) =>
     html`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#BCC5CF" stroke-width="1.5" />`;
 
-  const disp = (dx: number, dy: number) => html`
-    <g>
-      <rect x="${dx}" y="${dy}" width="36" height="46" rx="4" fill="#D0D5DC" />
-      <rect x="${dx + 4}" y="${dy + 4}" width="28" height="18" rx="3" fill="#1a1a2e" />
-      <rect x="${dx + 13}" y="${dy + 26}" width="10" height="14" rx="2" fill="#8A919A" />
-      <rect x="${dx + 10}" y="${dy + 40}" width="16" height="4" rx="2" fill="#B8C2CC" />
-    </g>`;
-
-  const maybe_disp = dispenser ? disp : () => html``;
+  const d = (dx: number, dy: number) => html`
+    <rect x="${dx}" y="${dy}" width="36" height="46" rx="4" fill="#D0D5DC" />
+    <rect x="${dx + 4}" y="${dy + 4}" width="28" height="18" rx="3" fill="#1a1a2e" />
+    <rect x="${dx + 13}" y="${dy + 26}" width="10" height="14" rx="2" fill="#8A919A" />
+    <rect x="${dx + 10}" y="${dy + 40}" width="16" height="4" rx="2" fill="#B8C2CC" />`;
 
   switch (layout) {
     case "freezer": {
@@ -75,7 +71,7 @@ function buildSvg(layout: Layout, ratio: number, dispenser: boolean): unknown {
         ${outer}
         <rect x="10" y="${Y0}" width="172" height="${h}" rx="10" fill="#F4F6F8" />
         ${handle(26, Y0 + Math.round(h / 2) + 30)}
-        ${maybe_disp(dc, Y0 + Math.round(h / 2) - 46)}
+        ${dispenser ? d(dc, Y0 + Math.round(h / 2) - 46) : nothing}
       </svg>`;
     }
 
@@ -91,7 +87,7 @@ function buildSvg(layout: Layout, ratio: number, dispenser: boolean): unknown {
         ${line(10, sep, 182, sep)}
         <rect x="10" y="${sep + 4}" width="172" height="${fH}" rx="10" fill="#F7F9FB" />
         ${handle(26, sep + 4 + Math.round(fH / 2) - 30)}
-        ${maybe_disp(dc, sep + 4 + Math.round(fH / 2) - 23)}
+        ${dispenser ? d(dc, sep + 4 + Math.round(fH / 2) - 23) : nothing}
       </svg>`;
     }
 
@@ -104,7 +100,7 @@ function buildSvg(layout: Layout, ratio: number, dispenser: boolean): unknown {
         ${outer}
         <rect x="10" y="${Y0}" width="172" height="${fH}" rx="10" fill="#F7F9FB" />
         ${handle(26, Y0 + Math.round(fH / 2) - 30)}
-        ${maybe_disp(dc, Y0 + Math.round(fH / 2) - 23)}
+        ${dispenser ? d(dc, Y0 + Math.round(fH / 2) - 23) : nothing}
         ${line(10, sep, 182, sep)}
         <rect x="10" y="${sep + 4}" width="172" height="${fh}" rx="10" fill="#F4F6F8" />
         ${handle(26, sep + 4 + Math.round(fh / 2) - 24)}
@@ -120,7 +116,7 @@ function buildSvg(layout: Layout, ratio: number, dispenser: boolean): unknown {
         ${outer}
         <rect x="10" y="${Y0}" width="${halfW}" height="${fH}" rx="10" fill="#F7F9FB" />
         ${handle(80, Y0 + Math.round(fH / 2) - 24)}
-        ${maybe_disp(10 + Math.round(halfW / 2) - 18, Y0 + Math.round(fH / 2) - 23)}
+        ${dispenser ? d(10 + Math.round(halfW / 2) - 18, Y0 + Math.round(fH / 2) - 23) : nothing}
         <rect x="${10 + halfW + 8}" y="${Y0}" width="${halfW}" height="${fH}" rx="10" fill="#F7F9FB" />
         ${handle(10 + halfW + 6, Y0 + Math.round(fH / 2) - 24)}
         ${line(10, sep, 182, sep)}
@@ -137,7 +133,7 @@ function buildSvg(layout: Layout, ratio: number, dispenser: boolean): unknown {
         ${outer}
         <rect x="8" y="${Y0}" width="${fw}" height="${H}" rx="10" fill="#F4F6F8" />
         ${handle(8 + Math.round(fw / 2) - 3, Y0 + Math.round(H / 2) + 40)}
-        ${maybe_disp(8 + Math.round(fw / 2) - 18, Y0 + 40)}
+        ${dispenser ? d(8 + Math.round(fw / 2) - 18, Y0 + 40) : nothing}
         ${line(lx - 1, Y0, lx - 1, Y0 + H)}
         <rect x="${lx}" y="${Y0}" width="${lw}" height="${H}" rx="10" fill="#F7F9FB" />
         ${handle(lx + Math.round(lw / 2) - 3, Y0 + Math.round(H / 2) - 25)}
@@ -266,7 +262,10 @@ export class HaFridgeCard extends LitElement {
     const ratio = (this._config.split_ratio as number) ?? 30;
     const zones = computeZones(layout, ratio);
     const showTitle = this._config.show_title !== false && this._config.show_title !== "false";
-    const showDispenser = this._config.show_dispenser === true || this._config.show_dispenser === "true";
+    const showDispenser = this._config.show_dispenser === true
+      || this._config.show_dispenser === "true"
+      || this._config.show_dispenser === 1
+      || this._config.show_dispenser === "1";
     const showFreezer = true;
     const showFridge = Boolean(zones.fridge);
 
