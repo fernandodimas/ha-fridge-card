@@ -11,86 +11,130 @@ const VIEWBOX_HEIGHT = 387;
 const LAYOUTS = ["default", "freezer", "inverted", "french_door", "dual_door"] as const;
 type Layout = (typeof LAYOUTS)[number];
 
-const LAYOUT_ZONES: Record<Layout, { freezer?: { x: number; y: number; width: number; height: number }; fridge?: { x: number; y: number; width: number; height: number } }> = {
-  default: {
-    freezer: { x: 10, y: 8, width: 172, height: 108 },
-    fridge: { x: 10, y: 124, width: 172, height: 253 },
-  },
-  freezer: {
-    freezer: { x: 10, y: 8, width: 172, height: 371 },
-  },
-  inverted: {
-    freezer: { x: 10, y: 269, width: 172, height: 108 },
-    fridge: { x: 10, y: 8, width: 172, height: 253 },
-  },
-  french_door: {
-    freezer: { x: 10, y: 269, width: 172, height: 108 },
-    fridge: { x: 10, y: 8, width: 172, height: 253 },
-  },
-  dual_door: {
-    freezer: { x: 8, y: 8, width: 76, height: 371 },
-    fridge: { x: 88, y: 8, width: 100, height: 371 },
-  },
-};
+type Zone = { x: number; y: number; width: number; height: number };
 
-// ── SVG Templates ──────────────────────────────────────────────────────────────
+function computeZones(layout: Layout, ratio: number): { freezer?: Zone; fridge?: Zone } {
+  const H = 371;
+  const Y0 = 8;
+  const r = ratio / 100;
 
-const SVG_DEFAULT = html`
-<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
-  <rect x="4" y="4" width="184" height="379" rx="14" fill="#E8ECF0" stroke="#C4CDD6" stroke-width="1.5" />
-  <rect x="10" y="8" width="172" height="108" rx="10" fill="#F4F6F8" />
-  <rect x="26" y="38" width="6" height="48" rx="3" fill="#B8C2CC" />
-  <line x1="10" y1="120" x2="182" y2="120" stroke="#BCC5CF" stroke-width="1.5" />
-  <rect x="10" y="124" width="172" height="253" rx="10" fill="#F7F9FB" />
-  <rect x="26" y="194" width="6" height="60" rx="3" fill="#B8C2CC" />
-</svg>`;
+  switch (layout) {
+    case "freezer":
+      return { freezer: { x: 10, y: Y0, width: 172, height: H } };
+    case "default":
+      return {
+        freezer: { x: 10, y: Y0, width: 172, height: Math.round(H * r) },
+        fridge: { x: 10, y: Y0 + Math.round(H * r) + 4, width: 172, height: Math.round(H * (1 - r)) - 4 },
+      };
+    case "inverted":
+    case "french_door":
+      return {
+        fridge: { x: 10, y: Y0, width: 172, height: Math.round(H * (1 - r)) - 4 },
+        freezer: { x: 10, y: Y0 + Math.round(H * (1 - r)), width: 172, height: Math.round(H * r) },
+      };
+    case "dual_door": {
+      const fw = Math.round(172 * r);
+      return {
+        freezer: { x: 8, y: Y0, width: fw, height: H },
+        fridge: { x: 8 + fw + 2, y: Y0, width: 172 - fw - 2, height: H },
+      };
+    }
+    default:
+      return {};
+  }
+}
 
-const SVG_FREEZER = html`
-<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
-  <rect x="4" y="4" width="184" height="379" rx="14" fill="#E8ECF0" stroke="#C4CDD6" stroke-width="1.5" />
-  <rect x="10" y="8" width="172" height="371" rx="10" fill="#F4F6F8" />
-  <rect x="26" y="170" width="6" height="50" rx="3" fill="#B8C2CC" />
-</svg>`;
+function buildSvg(layout: Layout, ratio: number, dispenser: boolean): unknown {
+  const r = ratio / 100;
+  const H = 371;
+  const Y0 = 8;
 
-const SVG_INVERTED = html`
-<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
-  <rect x="4" y="4" width="184" height="379" rx="14" fill="#E8ECF0" stroke="#C4CDD6" stroke-width="1.5" />
-  <rect x="10" y="8" width="172" height="253" rx="10" fill="#F7F9FB" />
-  <rect x="26" y="124" width="6" height="60" rx="3" fill="#B8C2CC" />
-  <line x1="10" y1="265" x2="182" y2="265" stroke="#BCC5CF" stroke-width="1.5" />
-  <rect x="10" y="269" width="172" height="108" rx="10" fill="#F4F6F8" />
-  <rect x="26" y="299" width="6" height="48" rx="3" fill="#B8C2CC" />
-</svg>`;
+  const outer = html`<rect x="4" y="4" width="184" height="379" rx="14" fill="#E8ECF0" stroke="#C4CDD6" stroke-width="1.5" />`;
 
-const SVG_FRENCH_DOOR = html`
-<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
-  <rect x="4" y="4" width="184" height="379" rx="14" fill="#E8ECF0" stroke="#C4CDD6" stroke-width="1.5" />
-  <rect x="10" y="8" width="82" height="253" rx="10" fill="#F7F9FB" />
-  <rect x="80" y="108" width="6" height="48" rx="3" fill="#B8C2CC" />
-  <rect x="100" y="8" width="82" height="253" rx="10" fill="#F7F9FB" />
-  <rect x="106" y="108" width="6" height="48" rx="3" fill="#B8C2CC" />
-  <line x1="10" y1="265" x2="182" y2="265" stroke="#BCC5CF" stroke-width="1.5" />
-  <rect x="10" y="269" width="172" height="108" rx="10" fill="#F4F6F8" />
-  <rect x="26" y="299" width="6" height="48" rx="3" fill="#B8C2CC" />
-</svg>`;
+  const handle = (hx: number, hy: number) =>
+    html`<rect x="${hx}" y="${hy}" width="6" height="48" rx="3" fill="#B8C2CC" />`;
 
-const SVG_DUAL_DOOR = html`
-<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
-  <rect x="4" y="4" width="184" height="379" rx="14" fill="#E8ECF0" stroke="#C4CDD6" stroke-width="1.5" />
-  <rect x="8" y="8" width="76" height="371" rx="10" fill="#F4F6F8" />
-  <rect x="76" y="170" width="6" height="50" rx="3" fill="#B8C2CC" />
-  <line x1="86" y1="8" x2="86" y2="379" stroke="#BCC5CF" stroke-width="1.5" />
-  <rect x="88" y="8" width="100" height="371" rx="10" fill="#F7F9FB" />
-  <rect x="90" y="170" width="6" height="50" rx="3" fill="#B8C2CC" />
-</svg>`;
+  const line = (x1: number, y1: number, x2: number, y2: number) =>
+    html`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#BCC5CF" stroke-width="1.5" />`;
 
-const FRIDGE_SVGS: Record<Layout, unknown> = {
-  default: SVG_DEFAULT,
-  freezer: SVG_FREEZER,
-  inverted: SVG_INVERTED,
-  french_door: SVG_FRENCH_DOOR,
-  dual_door: SVG_DUAL_DOOR,
-};
+  switch (layout) {
+    case "freezer": {
+      const h = H;
+      return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
+        ${outer}
+        <rect x="10" y="${Y0}" width="172" height="${h}" rx="10" fill="#F4F6F8" />
+        ${handle(26, Y0 + Math.round(h / 2) - 24)}
+      </svg>`;
+    }
+
+    case "default": {
+      const fh = Math.round(H * r);
+      const fH = Math.round(H * (1 - r)) - 4;
+      const sep = Y0 + fh;
+      return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
+        ${outer}
+        <rect x="10" y="${Y0}" width="172" height="${fh}" rx="10" fill="#F4F6F8" />
+        ${handle(26, Y0 + Math.round(fh / 2) - 24)}
+        ${line(10, sep, 182, sep)}
+        <rect x="10" y="${sep + 4}" width="172" height="${fH}" rx="10" fill="#F7F9FB" />
+        ${handle(26, sep + 4 + Math.round(fH / 2) - 30)}
+      </svg>`;
+    }
+
+    case "inverted":
+    case "french_door": {
+      const fH = Math.round(H * (1 - r)) - 4;
+      const fh = Math.round(H * r);
+      const sep = Y0 + fH;
+      if (layout === "french_door") {
+        const halfW = 82;
+        return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
+          ${outer}
+          <rect x="10" y="${Y0}" width="${halfW}" height="${fH}" rx="10" fill="#F7F9FB" />
+          ${handle(80, Y0 + Math.round(fH / 2) - 24)}
+          <rect x="${10 + halfW + 8}" y="${Y0}" width="${halfW}" height="${fH}" rx="10" fill="#F7F9FB" />
+          ${handle(10 + halfW + 6, Y0 + Math.round(fH / 2) - 24)}
+          ${line(10, sep, 182, sep)}
+          <rect x="10" y="${sep + 4}" width="172" height="${fh}" rx="10" fill="#F4F6F8" />
+          ${handle(26, sep + 4 + Math.round(fh / 2) - 24)}
+        </svg>`;
+      }
+      return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
+        ${outer}
+        <rect x="10" y="${Y0}" width="172" height="${fH}" rx="10" fill="#F7F9FB" />
+        ${handle(26, Y0 + Math.round(fH / 2) - 30)}
+        ${line(10, sep, 182, sep)}
+        <rect x="10" y="${sep + 4}" width="172" height="${fh}" rx="10" fill="#F4F6F8" />
+        ${handle(26, sep + 4 + Math.round(fh / 2) - 24)}
+      </svg>`;
+    }
+
+    case "dual_door": {
+      const fw = Math.round(172 * r);
+      const lw = 172 - fw - 2;
+      const lx = 8 + fw + 2;
+      const dispX = 8 + Math.round(fw / 2) - 18;
+      const dispY = Y0 + 40;
+      return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
+        ${outer}
+        <rect x="8" y="${Y0}" width="${fw}" height="${H}" rx="10" fill="#F4F6F8" />
+        ${handle(8 + Math.round(fw / 2) - 3, Y0 + Math.round(H / 2) + 40)}
+        ${dispenser ? html`
+          <rect x="${dispX}" y="${dispY}" width="36" height="46" rx="4" fill="#D0D5DC" />
+          <rect x="${dispX + 4}" y="${dispY + 4}" width="28" height="18" rx="3" fill="#1a1a2e" />
+          <rect x="${dispX + 13}" y="${dispY + 26}" width="10" height="14" rx="2" fill="#8A919A" />
+          <rect x="${dispX + 10}" y="${dispY + 40}" width="16" height="4" rx="2" fill="#B8C2CC" />
+        ` : nothing}
+        ${line(lx - 1, Y0, lx - 1, Y0 + H)}
+        <rect x="${lx}" y="${Y0}" width="${lw}" height="${H}" rx="10" fill="#F7F9FB" />
+        ${handle(lx + Math.round(lw / 2) - 3, Y0 + Math.round(H / 2) - 25)}
+      </svg>`;
+    }
+
+    default:
+      return html``;
+  }
+}
 
 // ── Card Class ─────────────────────────────────────────────────────────────────
 
@@ -103,6 +147,7 @@ export class HaFridgeCard extends LitElement {
     return {
       schema: [
         { name: "title", selector: { text: {} } },
+        { name: "show_title", selector: { boolean: {} } },
         {
           name: "layout",
           selector: {
@@ -122,6 +167,11 @@ export class HaFridgeCard extends LitElement {
         { name: "fridge_entity", selector: { entity: { domain: "sensor" } } },
         { name: "freezer_label", selector: { text: {} } },
         { name: "fridge_label", selector: { text: {} } },
+        { name: "show_dispenser", selector: { boolean: {} } },
+        {
+          name: "split_ratio",
+          selector: { number: { min: 20, max: 80, step: 1, mode: "slider", unit_of_measurement: "%" } },
+        },
         {
           name: "card_width",
           selector: { number: { min: 100, max: 400, step: 10, mode: "slider", unit_of_measurement: "px" } },
@@ -135,6 +185,8 @@ export class HaFridgeCard extends LitElement {
         switch (schema.name) {
           case "title":
             return "Title";
+          case "show_title":
+            return "Show title";
           case "layout":
             return "Layout";
           case "freezer_entity":
@@ -145,6 +197,10 @@ export class HaFridgeCard extends LitElement {
             return "Freezer label";
           case "fridge_label":
             return "Fridge label";
+          case "show_dispenser":
+            return "Show ice dispenser";
+          case "split_ratio":
+            return "Freezer / Fridge ratio";
           case "card_width":
             return "Width";
           case "card_height":
@@ -194,7 +250,10 @@ export class HaFridgeCard extends LitElement {
     if (!this._config) return nothing;
 
     const layout = this.normalizeLayout(this._config.layout as string | undefined);
-    const zones = LAYOUT_ZONES[layout];
+    const ratio = (this._config.split_ratio as number) ?? 30;
+    const zones = computeZones(layout, ratio);
+    const showTitle = this._config.show_title !== false;
+    const showDispenser = this._config.show_dispenser === true;
     const showFreezer = true;
     const showFridge = Boolean(zones.fridge);
 
@@ -213,13 +272,15 @@ export class HaFridgeCard extends LitElement {
     return html`
       <ha-card>
         <div class="card-shell">
-          <div class="heading">
-            <h3 class="title">${this._config.title}</h3>
-          </div>
+          ${showTitle ? html`
+            <div class="heading">
+              <h3 class="title">${this._config.title}</h3>
+            </div>
+          ` : nothing}
           <div class="body">
             <div class="fridge layout-${layout}" role="img" aria-label=${cardLabel}>
               <div class="fridge-photo-frame" style="width:${cardWidth}px;height:${cardHeight}px;">
-                ${FRIDGE_SVGS[layout]}
+                ${buildSvg(layout, ratio, showDispenser)}
                 <div class="readings">
                   ${showFreezer && zones.freezer
                     ? html`
