@@ -49,39 +49,20 @@ function buildSvg(layout: Layout, ratio: number, dispenser: boolean): unknown {
   const H = 365;
   const Y0 = 12;
 
-  const BODY = (x: number, y: number, w: number, h: number) =>
-    html`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="#ECEFF3" stroke="#C8CED6" stroke-width="1" />`;
-
-  const DOOR = (x: number, y: number, w: number, h: number) =>
-    html`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />`;
-
-  const HANDLE = (hx: number, hy: number) =>
-    html`<rect x="${hx}" y="${hy}" width="4" height="36" rx="2" fill="#B0B8C4" />`;
-
-  const DIVIDER_H = (y: number) =>
-    html`<rect x="14" y="${y}" width="164" height="2" rx="1" fill="#D6DCE4" />`;
-
-  const DIVIDER_V = (x: number) =>
-    html`<rect x="${x}" y="${Y0}" width="2" height="${H}" rx="1" fill="#D6DCE4" />`;
-
-  const FEET = html`
-    <rect x="20" y="381" width="10" height="6" rx="2" fill="#C8CED6" />
-    <rect x="162" y="381" width="10" height="6" rx="2" fill="#C8CED6" />`;
-
-  const DISPENSER = (dx: number, dy: number) => html`
-    <rect x="${dx}" y="${dy}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="0.8" />
-    <rect x="${dx + 4}" y="${dy + 4}" width="32" height="20" rx="3" fill="#2C2C3A" />
-    <rect x="${dx + 14}" y="${dy + 28}" width="12" height="14" rx="2" fill="#8A919A" />
-    <rect x="${dx + 10}" y="${dy + 44}" width="20" height="5" rx="2" fill="#A0A8B4" />`;
-
   switch (layout) {
     case "freezer": {
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
-        ${BODY(4, 4, 184, 379)}
-        ${DOOR(16, Y0, 160, H)}
-        ${HANDLE(24, Y0 + Math.round(H / 2) - 18)}
-        ${FEET}
-        ${dispenser ? DISPENSER(76, Y0 + Math.round(H / 2) - 26) : html``}
+        <rect x="4" y="4" width="184" height="379" rx="12" fill="#ECEFF3" stroke="#C8CED6" stroke-width="1.5" />
+        <rect x="16" y="${Y0}" width="160" height="${H}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="24" y="${Y0 + Math.round(H / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
+        <rect x="20" y="381" width="10" height="6" rx="2" fill="#C8CED6" />
+        <rect x="162" y="381" width="10" height="6" rx="2" fill="#C8CED6" />
+        ${dispenser ? html`
+          <rect x="76" y="${Y0 + Math.round(H / 2) - 26}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="0.8" />
+          <rect x="80" y="${Y0 + Math.round(H / 2) - 22}" width="32" height="20" rx="3" fill="#2C2C3A" />
+          <rect x="90" y="${Y0 + Math.round(H / 2) + 2}" width="12" height="14" rx="2" fill="#8A919A" />
+          <rect x="86" y="${Y0 + Math.round(H / 2) + 18}" width="20" height="5" rx="2" fill="#A0A8B4" />
+        ` : nothing}
       </svg>`;
     }
 
@@ -90,14 +71,20 @@ function buildSvg(layout: Layout, ratio: number, dispenser: boolean): unknown {
       const fH = Math.round(H * (1 - r)) - 2;
       const sep = Y0 + fh;
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
-        ${BODY(4, 4, 184, 379)}
-        ${DOOR(16, Y0, 160, fh)}
-        ${HANDLE(24, Y0 + Math.round(fh / 2) - 18)}
-        ${DIVIDER_H(sep)}
-        ${DOOR(16, sep + 2, 160, fH)}
-        ${HANDLE(24, sep + 2 + Math.round(fH / 2) - 18)}
-        ${FEET}
-        ${dispenser ? DISPENSER(76, sep + 2 + Math.round(fH / 2) - 26) : html``}
+        <rect x="4" y="4" width="184" height="379" rx="12" fill="#ECEFF3" stroke="#C8CED6" stroke-width="1.5" />
+        <rect x="16" y="${Y0}" width="160" height="${fh}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="24" y="${Y0 + Math.round(fh / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
+        <rect x="14" y="${sep}" width="164" height="2" rx="1" fill="#D6DCE4" />
+        <rect x="16" y="${sep + 2}" width="160" height="${fH}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="24" y="${sep + 2 + Math.round(fH / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
+        <rect x="20" y="381" width="10" height="6" rx="2" fill="#C8CED6" />
+        <rect x="162" y="381" width="10" height="6" rx="2" fill="#C8CED6" />
+        ${dispenser ? html`
+          <rect x="76" y="${sep + 2 + Math.round(fH / 2) - 26}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="0.8" />
+          <rect x="80" y="${sep + 2 + Math.round(fH / 2) - 22}" width="32" height="20" rx="3" fill="#2C2C3A" />
+          <rect x="90" y="${sep + 2 + Math.round(fH / 2) + 2}" width="12" height="14" rx="2" fill="#8A919A" />
+          <rect x="86" y="${sep + 2 + Math.round(fH / 2) + 18}" width="20" height="5" rx="2" fill="#A0A8B4" />
+        ` : nothing}
       </svg>`;
     }
 
@@ -106,14 +93,20 @@ function buildSvg(layout: Layout, ratio: number, dispenser: boolean): unknown {
       const fh = Math.round(H * r);
       const sep = Y0 + fH;
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
-        ${BODY(4, 4, 184, 379)}
-        ${DOOR(16, Y0, 160, fH)}
-        ${HANDLE(24, Y0 + Math.round(fH / 2) - 18)}
-        ${dispenser ? DISPENSER(76, Y0 + Math.round(fH / 2) - 26) : html``}
-        ${DIVIDER_H(sep)}
-        ${DOOR(16, sep + 2, 160, fh)}
-        ${HANDLE(24, sep + 2 + Math.round(fh / 2) - 18)}
-        ${FEET}
+        <rect x="4" y="4" width="184" height="379" rx="12" fill="#ECEFF3" stroke="#C8CED6" stroke-width="1.5" />
+        <rect x="16" y="${Y0}" width="160" height="${fH}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="24" y="${Y0 + Math.round(fH / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
+        ${dispenser ? html`
+          <rect x="76" y="${Y0 + Math.round(fH / 2) - 26}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="0.8" />
+          <rect x="80" y="${Y0 + Math.round(fH / 2) - 22}" width="32" height="20" rx="3" fill="#2C2C3A" />
+          <rect x="90" y="${Y0 + Math.round(fH / 2) + 2}" width="12" height="14" rx="2" fill="#8A919A" />
+          <rect x="86" y="${Y0 + Math.round(fH / 2) + 18}" width="20" height="5" rx="2" fill="#A0A8B4" />
+        ` : nothing}
+        <rect x="14" y="${sep}" width="164" height="2" rx="1" fill="#D6DCE4" />
+        <rect x="16" y="${sep + 2}" width="160" height="${fh}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="24" y="${sep + 2 + Math.round(fh / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
+        <rect x="20" y="381" width="10" height="6" rx="2" fill="#C8CED6" />
+        <rect x="162" y="381" width="10" height="6" rx="2" fill="#C8CED6" />
       </svg>`;
     }
 
@@ -123,17 +116,23 @@ function buildSvg(layout: Layout, ratio: number, dispenser: boolean): unknown {
       const sep = Y0 + fH;
       const halfW = 78;
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
-        ${BODY(4, 4, 184, 379)}
-        ${DOOR(16, Y0, halfW, fH)}
-        ${HANDLE(80, Y0 + Math.round(fH / 2) - 18)}
-        ${dispenser ? DISPENSER(16 + Math.round(halfW / 2) - 20, Y0 + Math.round(fH / 2) - 26) : html``}
-        ${DIVIDER_V(96)}
-        ${DOOR(98, Y0, halfW, fH)}
-        ${HANDLE(162, Y0 + Math.round(fH / 2) - 18)}
-        ${DIVIDER_H(sep)}
-        ${DOOR(16, sep + 2, 160, fh)}
-        ${HANDLE(24, sep + 2 + Math.round(fh / 2) - 18)}
-        ${FEET}
+        <rect x="4" y="4" width="184" height="379" rx="12" fill="#ECEFF3" stroke="#C8CED6" stroke-width="1.5" />
+        <rect x="16" y="${Y0}" width="${halfW}" height="${fH}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="80" y="${Y0 + Math.round(fH / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
+        ${dispenser ? html`
+          <rect x="26" y="${Y0 + Math.round(fH / 2) - 26}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="0.8" />
+          <rect x="30" y="${Y0 + Math.round(fH / 2) - 22}" width="32" height="20" rx="3" fill="#2C2C3A" />
+          <rect x="40" y="${Y0 + Math.round(fH / 2) + 2}" width="12" height="14" rx="2" fill="#8A919A" />
+          <rect x="36" y="${Y0 + Math.round(fH / 2) + 18}" width="20" height="5" rx="2" fill="#A0A8B4" />
+        ` : nothing}
+        <rect x="96" y="${Y0}" width="2" height="${fH}" rx="1" fill="#D6DCE4" />
+        <rect x="98" y="${Y0}" width="${halfW}" height="${fH}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="162" y="${Y0 + Math.round(fH / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
+        <rect x="14" y="${sep}" width="164" height="2" rx="1" fill="#D6DCE4" />
+        <rect x="16" y="${sep + 2}" width="160" height="${fh}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="24" y="${sep + 2 + Math.round(fh / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
+        <rect x="20" y="381" width="10" height="6" rx="2" fill="#C8CED6" />
+        <rect x="162" y="381" width="10" height="6" rx="2" fill="#C8CED6" />
       </svg>`;
     }
 
@@ -142,14 +141,20 @@ function buildSvg(layout: Layout, ratio: number, dispenser: boolean): unknown {
       const lw = 160 - fw;
       const lx = 12 + fw + 4;
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
-        ${BODY(4, 4, 184, 379)}
-        ${DOOR(12, Y0, fw, H)}
-        ${HANDLE(12 + Math.round(fw / 2) - 2, Y0 + Math.round(H / 2) - 18)}
-        ${dispenser ? DISPENSER(12 + Math.round(fw / 2) - 20, Y0 + 40) : html``}
-        ${DIVIDER_V(lx - 2)}
-        ${DOOR(lx, Y0, lw, H)}
-        ${HANDLE(lx + Math.round(lw / 2) - 2, Y0 + Math.round(H / 2) - 18)}
-        ${FEET}
+        <rect x="4" y="4" width="184" height="379" rx="12" fill="#ECEFF3" stroke="#C8CED6" stroke-width="1.5" />
+        <rect x="12" y="${Y0}" width="${fw}" height="${H}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="${12 + Math.round(fw / 2) - 2}" y="${Y0 + Math.round(H / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
+        ${dispenser ? html`
+          <rect x="${12 + Math.round(fw / 2) - 20}" y="${Y0 + 40}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="0.8" />
+          <rect x="${12 + Math.round(fw / 2) - 16}" y="${Y0 + 44}" width="32" height="20" rx="3" fill="#2C2C3A" />
+          <rect x="${12 + Math.round(fw / 2) - 6}" y="${Y0 + 68}" width="12" height="14" rx="2" fill="#8A919A" />
+          <rect x="${12 + Math.round(fw / 2) - 10}" y="${Y0 + 84}" width="20" height="5" rx="2" fill="#A0A8B4" />
+        ` : nothing}
+        <rect x="${lx - 2}" y="${Y0}" width="2" height="${H}" rx="1" fill="#D6DCE4" />
+        <rect x="${lx}" y="${Y0}" width="${lw}" height="${H}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="${lx + Math.round(lw / 2) - 2}" y="${Y0 + Math.round(H / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
+        <rect x="20" y="381" width="10" height="6" rx="2" fill="#C8CED6" />
+        <rect x="162" y="381" width="10" height="6" rx="2" fill="#C8CED6" />
       </svg>`;
     }
 
