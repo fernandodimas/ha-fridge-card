@@ -36,7 +36,7 @@ const LAYOUT_ZONES: Record<Layout, { freezer?: { x: number; y: number; width: nu
 // ── SVG Templates ──────────────────────────────────────────────────────────────
 
 const SVG_DEFAULT = html`
-<svg class="fridge-svg" viewBox="0 0 192 387">
+<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
   <rect x="4" y="4" width="184" height="379" rx="14" fill="#E8ECF0" stroke="#C4CDD6" stroke-width="1.5" />
   <rect x="10" y="8" width="172" height="108" rx="10" fill="#F4F6F8" />
   <rect x="26" y="38" width="6" height="48" rx="3" fill="#B8C2CC" />
@@ -46,14 +46,14 @@ const SVG_DEFAULT = html`
 </svg>`;
 
 const SVG_FREEZER = html`
-<svg class="fridge-svg" viewBox="0 0 192 387">
+<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
   <rect x="4" y="4" width="184" height="379" rx="14" fill="#E8ECF0" stroke="#C4CDD6" stroke-width="1.5" />
   <rect x="10" y="8" width="172" height="371" rx="10" fill="#F4F6F8" />
   <rect x="26" y="170" width="6" height="50" rx="3" fill="#B8C2CC" />
 </svg>`;
 
 const SVG_INVERTED = html`
-<svg class="fridge-svg" viewBox="0 0 192 387">
+<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
   <rect x="4" y="4" width="184" height="379" rx="14" fill="#E8ECF0" stroke="#C4CDD6" stroke-width="1.5" />
   <rect x="10" y="8" width="172" height="253" rx="10" fill="#F7F9FB" />
   <rect x="26" y="124" width="6" height="60" rx="3" fill="#B8C2CC" />
@@ -63,7 +63,7 @@ const SVG_INVERTED = html`
 </svg>`;
 
 const SVG_FRENCH_DOOR = html`
-<svg class="fridge-svg" viewBox="0 0 192 387">
+<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
   <rect x="4" y="4" width="184" height="379" rx="14" fill="#E8ECF0" stroke="#C4CDD6" stroke-width="1.5" />
   <rect x="10" y="8" width="82" height="253" rx="10" fill="#F7F9FB" />
   <rect x="80" y="108" width="6" height="48" rx="3" fill="#B8C2CC" />
@@ -75,7 +75,7 @@ const SVG_FRENCH_DOOR = html`
 </svg>`;
 
 const SVG_DUAL_DOOR = html`
-<svg class="fridge-svg" viewBox="0 0 192 387">
+<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
   <rect x="4" y="4" width="184" height="379" rx="14" fill="#E8ECF0" stroke="#C4CDD6" stroke-width="1.5" />
   <rect x="8" y="8" width="76" height="371" rx="10" fill="#F4F6F8" />
   <rect x="76" y="170" width="6" height="50" rx="3" fill="#B8C2CC" />
