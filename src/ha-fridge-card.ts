@@ -14,29 +14,29 @@ type Layout = (typeof LAYOUTS)[number];
 type Zone = { x: number; y: number; width: number; height: number };
 
 function computeZones(layout: Layout, ratio: number): { freezer?: Zone; fridge?: Zone } {
-  const H = 371;
-  const Y0 = 8;
+  const H = 365;
+  const Y0 = 12;
   const r = ratio / 100;
 
   switch (layout) {
     case "freezer":
-      return { freezer: { x: 10, y: Y0, width: 172, height: H } };
+      return { freezer: { x: 16, y: Y0, width: 160, height: H } };
     case "default":
       return {
-        freezer: { x: 10, y: Y0, width: 172, height: Math.round(H * r) },
-        fridge: { x: 10, y: Y0 + Math.round(H * r) + 4, width: 172, height: Math.round(H * (1 - r)) - 4 },
+        freezer: { x: 16, y: Y0, width: 160, height: Math.round(H * r) },
+        fridge: { x: 16, y: Y0 + Math.round(H * r) + 2, width: 160, height: Math.round(H * (1 - r)) - 2 },
       };
     case "inverted":
     case "french_door":
       return {
-        fridge: { x: 10, y: Y0, width: 172, height: Math.round(H * (1 - r)) - 4 },
-        freezer: { x: 10, y: Y0 + Math.round(H * (1 - r)), width: 172, height: Math.round(H * r) },
+        fridge: { x: 16, y: Y0, width: 160, height: Math.round(H * (1 - r)) - 2 },
+        freezer: { x: 16, y: Y0 + Math.round(H * (1 - r)), width: 160, height: Math.round(H * r) },
       };
     case "dual_door": {
-      const fw = Math.round(172 * r);
+      const fw = Math.round(160 * r);
       return {
-        freezer: { x: 8, y: Y0, width: fw, height: H },
-        fridge: { x: 8 + fw + 2, y: Y0, width: 172 - fw - 2, height: H },
+        freezer: { x: 12, y: Y0, width: fw, height: H },
+        fridge: { x: 12 + fw + 4, y: Y0, width: 160 - fw, height: H },
       };
     }
     default:
@@ -46,97 +46,110 @@ function computeZones(layout: Layout, ratio: number): { freezer?: Zone; fridge?:
 
 function buildSvg(layout: Layout, ratio: number, dispenser: boolean): unknown {
   const r = ratio / 100;
-  const H = 371;
-  const Y0 = 8;
+  const H = 365;
+  const Y0 = 12;
 
-  const outer = html`<rect x="4" y="4" width="184" height="379" rx="14" fill="#E8ECF0" stroke="#C4CDD6" stroke-width="1.5" />`;
+  const BODY = (x: number, y: number, w: number, h: number) =>
+    html`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="#ECEFF3" stroke="#C8CED6" stroke-width="1" />`;
 
-  const handle = (hx: number, hy: number) =>
-    html`<rect x="${hx}" y="${hy}" width="6" height="48" rx="3" fill="#B8C2CC" />`;
+  const DOOR = (x: number, y: number, w: number, h: number) =>
+    html`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />`;
 
-  const line = (x1: number, y1: number, x2: number, y2: number) =>
-    html`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#BCC5CF" stroke-width="1.5" />`;
+  const HANDLE = (hx: number, hy: number) =>
+    html`<rect x="${hx}" y="${hy}" width="4" height="36" rx="2" fill="#B0B8C4" />`;
 
-  const d = (dx: number, dy: number) => html`
-    <rect x="${dx}" y="${dy}" width="36" height="46" rx="4" fill="#D0D5DC" />
-    <rect x="${dx + 4}" y="${dy + 4}" width="28" height="18" rx="3" fill="#1a1a2e" />
-    <rect x="${dx + 13}" y="${dy + 26}" width="10" height="14" rx="2" fill="#8A919A" />
-    <rect x="${dx + 10}" y="${dy + 40}" width="16" height="4" rx="2" fill="#B8C2CC" />`;
+  const DIVIDER_H = (y: number) =>
+    html`<rect x="14" y="${y}" width="164" height="2" rx="1" fill="#D6DCE4" />`;
+
+  const DIVIDER_V = (x: number) =>
+    html`<rect x="${x}" y="${Y0}" width="2" height="${H}" rx="1" fill="#D6DCE4" />`;
+
+  const FEET = html`
+    <rect x="20" y="381" width="10" height="6" rx="2" fill="#C8CED6" />
+    <rect x="162" y="381" width="10" height="6" rx="2" fill="#C8CED6" />`;
+
+  const DISPENSER = (dx: number, dy: number) => html`
+    <rect x="${dx}" y="${dy}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="0.8" />
+    <rect x="${dx + 4}" y="${dy + 4}" width="32" height="20" rx="3" fill="#2C2C3A" />
+    <rect x="${dx + 14}" y="${dy + 28}" width="12" height="14" rx="2" fill="#8A919A" />
+    <rect x="${dx + 10}" y="${dy + 44}" width="20" height="5" rx="2" fill="#A0A8B4" />`;
 
   switch (layout) {
     case "freezer": {
-      const h = H;
-      const dc = 10 + Math.round(172 / 2) - 18;
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
-        ${outer}
-        <rect x="10" y="${Y0}" width="172" height="${h}" rx="10" fill="#F4F6F8" />
-        ${handle(26, Y0 + Math.round(h / 2) + 30)}
-        ${dispenser ? d(dc, Y0 + Math.round(h / 2) - 46) : nothing}
+        ${BODY(4, 4, 184, 379)}
+        ${DOOR(16, Y0, 160, H)}
+        ${HANDLE(24, Y0 + Math.round(H / 2) - 18)}
+        ${FEET}
+        ${dispenser ? DISPENSER(76, Y0 + Math.round(H / 2) - 26) : html``}
       </svg>`;
     }
 
     case "default": {
       const fh = Math.round(H * r);
-      const fH = Math.round(H * (1 - r)) - 4;
+      const fH = Math.round(H * (1 - r)) - 2;
       const sep = Y0 + fh;
-      const dc = 10 + Math.round(172 / 2) - 18;
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
-        ${outer}
-        <rect x="10" y="${Y0}" width="172" height="${fh}" rx="10" fill="#F4F6F8" />
-        ${handle(26, Y0 + Math.round(fh / 2) - 24)}
-        ${line(10, sep, 182, sep)}
-        <rect x="10" y="${sep + 4}" width="172" height="${fH}" rx="10" fill="#F7F9FB" />
-        ${handle(26, sep + 4 + Math.round(fH / 2) - 30)}
-        ${dispenser ? d(dc, sep + 4 + Math.round(fH / 2) - 23) : nothing}
+        ${BODY(4, 4, 184, 379)}
+        ${DOOR(16, Y0, 160, fh)}
+        ${HANDLE(24, Y0 + Math.round(fh / 2) - 18)}
+        ${DIVIDER_H(sep)}
+        ${DOOR(16, sep + 2, 160, fH)}
+        ${HANDLE(24, sep + 2 + Math.round(fH / 2) - 18)}
+        ${FEET}
+        ${dispenser ? DISPENSER(76, sep + 2 + Math.round(fH / 2) - 26) : html``}
       </svg>`;
     }
 
     case "inverted": {
-      const fH = Math.round(H * (1 - r)) - 4;
+      const fH = Math.round(H * (1 - r)) - 2;
       const fh = Math.round(H * r);
       const sep = Y0 + fH;
-      const dc = 10 + Math.round(172 / 2) - 18;
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
-        ${outer}
-        <rect x="10" y="${Y0}" width="172" height="${fH}" rx="10" fill="#F7F9FB" />
-        ${handle(26, Y0 + Math.round(fH / 2) - 30)}
-        ${dispenser ? d(dc, Y0 + Math.round(fH / 2) - 23) : nothing}
-        ${line(10, sep, 182, sep)}
-        <rect x="10" y="${sep + 4}" width="172" height="${fh}" rx="10" fill="#F4F6F8" />
-        ${handle(26, sep + 4 + Math.round(fh / 2) - 24)}
+        ${BODY(4, 4, 184, 379)}
+        ${DOOR(16, Y0, 160, fH)}
+        ${HANDLE(24, Y0 + Math.round(fH / 2) - 18)}
+        ${dispenser ? DISPENSER(76, Y0 + Math.round(fH / 2) - 26) : html``}
+        ${DIVIDER_H(sep)}
+        ${DOOR(16, sep + 2, 160, fh)}
+        ${HANDLE(24, sep + 2 + Math.round(fh / 2) - 18)}
+        ${FEET}
       </svg>`;
     }
 
     case "french_door": {
-      const fH = Math.round(H * (1 - r)) - 4;
+      const fH = Math.round(H * (1 - r)) - 2;
       const fh = Math.round(H * r);
       const sep = Y0 + fH;
-      const halfW = 82;
+      const halfW = 78;
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
-        ${outer}
-        <rect x="10" y="${Y0}" width="${halfW}" height="${fH}" rx="10" fill="#F7F9FB" />
-        ${handle(80, Y0 + Math.round(fH / 2) - 24)}
-        ${dispenser ? d(10 + Math.round(halfW / 2) - 18, Y0 + Math.round(fH / 2) - 23) : nothing}
-        <rect x="${10 + halfW + 8}" y="${Y0}" width="${halfW}" height="${fH}" rx="10" fill="#F7F9FB" />
-        ${handle(10 + halfW + 6, Y0 + Math.round(fH / 2) - 24)}
-        ${line(10, sep, 182, sep)}
-        <rect x="10" y="${sep + 4}" width="172" height="${fh}" rx="10" fill="#F4F6F8" />
-        ${handle(26, sep + 4 + Math.round(fh / 2) - 24)}
+        ${BODY(4, 4, 184, 379)}
+        ${DOOR(16, Y0, halfW, fH)}
+        ${HANDLE(80, Y0 + Math.round(fH / 2) - 18)}
+        ${dispenser ? DISPENSER(16 + Math.round(halfW / 2) - 20, Y0 + Math.round(fH / 2) - 26) : html``}
+        ${DIVIDER_V(96)}
+        ${DOOR(98, Y0, halfW, fH)}
+        ${HANDLE(162, Y0 + Math.round(fH / 2) - 18)}
+        ${DIVIDER_H(sep)}
+        ${DOOR(16, sep + 2, 160, fh)}
+        ${HANDLE(24, sep + 2 + Math.round(fh / 2) - 18)}
+        ${FEET}
       </svg>`;
     }
 
     case "dual_door": {
-      const fw = Math.round(172 * r);
-      const lw = 172 - fw - 2;
-      const lx = 8 + fw + 2;
+      const fw = Math.round(160 * r);
+      const lw = 160 - fw;
+      const lx = 12 + fw + 4;
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
-        ${outer}
-        <rect x="8" y="${Y0}" width="${fw}" height="${H}" rx="10" fill="#F4F6F8" />
-        ${handle(8 + Math.round(fw / 2) - 3, Y0 + Math.round(H / 2) + 40)}
-        ${dispenser ? d(8 + Math.round(fw / 2) - 18, Y0 + 40) : nothing}
-        ${line(lx - 1, Y0, lx - 1, Y0 + H)}
-        <rect x="${lx}" y="${Y0}" width="${lw}" height="${H}" rx="10" fill="#F7F9FB" />
-        ${handle(lx + Math.round(lw / 2) - 3, Y0 + Math.round(H / 2) - 25)}
+        ${BODY(4, 4, 184, 379)}
+        ${DOOR(12, Y0, fw, H)}
+        ${HANDLE(12 + Math.round(fw / 2) - 2, Y0 + Math.round(H / 2) - 18)}
+        ${dispenser ? DISPENSER(12 + Math.round(fw / 2) - 20, Y0 + 40) : html``}
+        ${DIVIDER_V(lx - 2)}
+        ${DOOR(lx, Y0, lw, H)}
+        ${HANDLE(lx + Math.round(lw / 2) - 2, Y0 + Math.round(H / 2) - 18)}
+        ${FEET}
       </svg>`;
     }
 
