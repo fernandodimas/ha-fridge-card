@@ -156,7 +156,18 @@ export class HaFridgeCard extends LitElement {
     return {
       schema: [
         { name: "title", selector: { text: {} } },
-        { name: "show_title", selector: { boolean: {} } },
+        {
+          name: "show_title",
+          selector: {
+            select: {
+              mode: "dropdown",
+              options: [
+                { value: "true", label: "Yes" },
+                { value: "false", label: "No" },
+              ],
+            },
+          },
+        },
         {
           name: "layout",
           selector: {
@@ -176,7 +187,18 @@ export class HaFridgeCard extends LitElement {
         { name: "fridge_entity", selector: { entity: { domain: "sensor" } } },
         { name: "freezer_label", selector: { text: {} } },
         { name: "fridge_label", selector: { text: {} } },
-        { name: "show_dispenser", selector: { boolean: {} } },
+        {
+          name: "show_dispenser",
+          selector: {
+            select: {
+              mode: "dropdown",
+              options: [
+                { value: "true", label: "Yes" },
+                { value: "false", label: "No" },
+              ],
+            },
+          },
+        },
         {
           name: "split_ratio",
           selector: { number: { min: 20, max: 80, step: 1, mode: "slider", unit_of_measurement: "%" } },
@@ -261,11 +283,8 @@ export class HaFridgeCard extends LitElement {
     const layout = this.normalizeLayout(this._config.layout as string | undefined);
     const ratio = (this._config.split_ratio as number) ?? 30;
     const zones = computeZones(layout, ratio);
-    const showTitle = this._config.show_title !== false && this._config.show_title !== "false";
-    const showDispenser = this._config.show_dispenser === true
-      || this._config.show_dispenser === "true"
-      || this._config.show_dispenser === 1
-      || this._config.show_dispenser === "1";
+    const showTitle = this._config.show_title !== "false";
+    const showDispenser = this._config.show_dispenser === "true";
     const showFreezer = true;
     const showFridge = Boolean(zones.fridge);
 
