@@ -120,6 +120,8 @@ export class HaFridgeCard extends LitElement {
         },
         { name: "freezer_entity", selector: { entity: { domain: "sensor" } } },
         { name: "fridge_entity", selector: { entity: { domain: "sensor" } } },
+        { name: "freezer_label", selector: { text: {} } },
+        { name: "fridge_label", selector: { text: {} } },
       ],
       computeLabel: (schema: { name: string }) => {
         switch (schema.name) {
@@ -131,6 +133,10 @@ export class HaFridgeCard extends LitElement {
             return "Freezer sensor";
           case "fridge_entity":
             return "Fridge sensor";
+          case "freezer_label":
+            return "Freezer label";
+          case "fridge_label":
+            return "Fridge label";
           default:
             return undefined;
         }
@@ -187,6 +193,9 @@ export class HaFridgeCard extends LitElement {
 
     const cardLabel = this.cardLabel(showFreezer, showFridge);
 
+    const freezerLabel = (this._config.freezer_label as string) || "Freezer";
+    const fridgeLabel = (this._config.fridge_label as string) || "Fridge";
+
     return html`
       <ha-card>
         <div class="card-shell">
@@ -202,7 +211,7 @@ export class HaFridgeCard extends LitElement {
                     ? html`
                         <section class="reading zone-freezer"
                           style=${this.readingStyle(zones.freezer)}>
-                          <p class="section-label">Freezer</p>
+                          <p class="section-label">${freezerLabel}</p>
                           <div class=${this.temperatureClass(freezer)}>
                             <span>${freezer.stateText}</span>
                             ${freezer.unitText
@@ -216,7 +225,7 @@ export class HaFridgeCard extends LitElement {
                     ? html`
                         <section class="reading zone-fridge"
                           style=${this.readingStyle(zones.fridge)}>
-                          <p class="section-label">Fridge</p>
+                          <p class="section-label">${fridgeLabel}</p>
                           <div class=${this.temperatureClass(fridge)}>
                             <span>${fridge.stateText}</span>
                             ${fridge.unitText
