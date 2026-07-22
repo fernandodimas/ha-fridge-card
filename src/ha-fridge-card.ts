@@ -58,10 +58,12 @@ function buildSvg(layout: Layout, ratio: number, dispenser: boolean): unknown {
     html`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#BCC5CF" stroke-width="1.5" />`;
 
   const disp = (dx: number, dy: number) => html`
-    <rect x="${dx}" y="${dy}" width="36" height="46" rx="4" fill="#D0D5DC" />
-    <rect x="${dx + 4}" y="${dy + 4}" width="28" height="18" rx="3" fill="#1a1a2e" />
-    <rect x="${dx + 13}" y="${dy + 26}" width="10" height="14" rx="2" fill="#8A919A" />
-    <rect x="${dx + 10}" y="${dy + 40}" width="16" height="4" rx="2" fill="#B8C2CC" />`;
+    <g>
+      <rect x="${dx}" y="${dy}" width="36" height="46" rx="4" fill="#D0D5DC" />
+      <rect x="${dx + 4}" y="${dy + 4}" width="28" height="18" rx="3" fill="#1a1a2e" />
+      <rect x="${dx + 13}" y="${dy + 26}" width="10" height="14" rx="2" fill="#8A919A" />
+      <rect x="${dx + 10}" y="${dy + 40}" width="16" height="4" rx="2" fill="#B8C2CC" />
+    </g>`;
 
   const maybe_disp = dispenser ? disp : () => html``;
 
