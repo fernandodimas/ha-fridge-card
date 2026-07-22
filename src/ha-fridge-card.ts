@@ -122,6 +122,14 @@ export class HaFridgeCard extends LitElement {
         { name: "fridge_entity", selector: { entity: { domain: "sensor" } } },
         { name: "freezer_label", selector: { text: {} } },
         { name: "fridge_label", selector: { text: {} } },
+        {
+          name: "card_width",
+          selector: { number: { min: 100, max: 400, step: 10, mode: "slider", unit_of_measurement: "px" } },
+        },
+        {
+          name: "card_height",
+          selector: { number: { min: 200, max: 600, step: 10, mode: "slider", unit_of_measurement: "px" } },
+        },
       ],
       computeLabel: (schema: { name: string }) => {
         switch (schema.name) {
@@ -137,6 +145,10 @@ export class HaFridgeCard extends LitElement {
             return "Freezer label";
           case "fridge_label":
             return "Fridge label";
+          case "card_width":
+            return "Width";
+          case "card_height":
+            return "Height";
           default:
             return undefined;
         }
@@ -195,6 +207,8 @@ export class HaFridgeCard extends LitElement {
 
     const freezerLabel = (this._config.freezer_label as string) || "Freezer";
     const fridgeLabel = (this._config.fridge_label as string) || "Fridge";
+    const cardWidth = (this._config.card_width as number) || 230;
+    const cardHeight = (this._config.card_height as number) || 387;
 
     return html`
       <ha-card>
@@ -204,7 +218,7 @@ export class HaFridgeCard extends LitElement {
           </div>
           <div class="body">
             <div class="fridge layout-${layout}" role="img" aria-label=${cardLabel}>
-              <div class="fridge-photo-frame">
+              <div class="fridge-photo-frame" style="width:${cardWidth}px;height:${cardHeight}px;">
                 ${FRIDGE_SVGS[layout]}
                 <div class="readings">
                   ${showFreezer && zones.freezer
@@ -236,10 +250,6 @@ export class HaFridgeCard extends LitElement {
                       `
                     : nothing}
                 </div>
-              </div>
-              <div class="feet" aria-hidden="true">
-                <span class="foot"></span>
-                <span class="foot"></span>
               </div>
             </div>
           </div>
@@ -359,8 +369,6 @@ export class HaFridgeCard extends LitElement {
 
       .fridge-photo-frame {
         position: relative;
-        width: 230px;
-        height: 387px;
         border-radius: 18px 18px 12px 12px;
         background: var(--card-background-color, #fff);
         box-shadow:
@@ -432,27 +440,6 @@ export class HaFridgeCard extends LitElement {
 
       .temperature.placeholder {
         opacity: 0.35;
-      }
-
-      .feet {
-        display: flex;
-        justify-content: space-between;
-        width: 140px;
-      }
-
-      .foot {
-        display: block;
-        width: 28px;
-        height: 6px;
-        border-radius: 3px;
-        background: linear-gradient(180deg, #c4cdd6 0%, #b0b9c4 100%);
-      }
-
-      @media (max-width: 420px) {
-        .fridge-photo-frame {
-          width: 211px;
-          height: 387px;
-        }
       }
     `;
   }
