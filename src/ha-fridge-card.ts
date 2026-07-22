@@ -145,14 +145,16 @@ function buildSvg(layout: Layout): unknown {
       const fw = 82;
       const lw = 164 - fw;
       const lx = X0 + fw + 4;
+      const dcx = X0 + Math.round(fw / 2);
+      const cy = Y0 + Math.round(H / 2) - 26;
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
         <rect x="4" y="4" width="184" height="379" rx="12" fill="#ECEFF3" stroke="#C8CED6" stroke-width="1.5" />
         <rect x="${X0}" y="${Y0}" width="${fw}" height="${H}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
         <rect x="${lx - 4}" y="${Y0 + Math.round(H / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
-        <rect x="${X0 + Math.round(fw / 2) - 20}" y="${Y0 + 40}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="0.8" />
-        <rect x="${X0 + Math.round(fw / 2) - 16}" y="${Y0 + 44}" width="32" height="20" rx="3" fill="#2C2C3A" />
-        <rect x="${X0 + Math.round(fw / 2) - 6}" y="${Y0 + 68}" width="12" height="14" rx="2" fill="#8A919A" />
-        <rect x="${X0 + Math.round(fw / 2) - 10}" y="${Y0 + 84}" width="20" height="5" rx="2" fill="#A0A8B4" />
+        <rect x="${dcx - 20}" y="${cy}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="0.8" />
+        <rect x="${dcx - 16}" y="${cy + 4}" width="32" height="20" rx="3" fill="#2C2C3A" />
+        <rect x="${dcx - 6}" y="${cy + 28}" width="12" height="14" rx="2" fill="#8A919A" />
+        <rect x="${dcx - 10}" y="${cy + 44}" width="20" height="5" rx="2" fill="#A0A8B4" />
         <rect x="${lx - 2}" y="${Y0}" width="2" height="${H}" rx="1" fill="#D6DCE4" />
         <rect x="${lx}" y="${Y0}" width="${lw}" height="${H}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
         <rect x="${lx + 4}" y="${Y0 + Math.round(H / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
