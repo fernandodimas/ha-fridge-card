@@ -16,8 +16,6 @@ This fork introduces a new **`dual_door`** layout and renames the original to `f
 | `french_door` | French door (two doors on top + drawer on bottom) — _previously `dual_door`_ |
 | `freezer` | Freezer only |
 
-![Side by Side](assets/side-by-side.png)
-
 ## Installation
 
 ### HACS (recommended)

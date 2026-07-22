@@ -1,5 +1,5 @@
 import { LitElement, html, nothing, css } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 
 const CARD_TYPE = "ha-fridge-card";
 
@@ -96,8 +96,8 @@ const FRIDGE_SVGS: Record<Layout, unknown> = {
 
 @customElement(CARD_TYPE)
 export class HaFridgeCard extends LitElement {
-  @property({ attribute: false }) private _config?: Record<string, unknown>;
-  @property({ attribute: false }) private _hass?: any;
+  private _config?: Record<string, unknown>;
+  private _hass?: any;
 
   static getConfigForm() {
     return {
@@ -155,6 +155,7 @@ export class HaFridgeCard extends LitElement {
 
   set hass(hass: any) {
     this._hass = hass;
+    this.requestUpdate();
   }
 
   get hass() {
