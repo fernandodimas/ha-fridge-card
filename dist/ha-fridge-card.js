@@ -125,7 +125,7 @@
 
       .fridge-photo-frame {
         position: relative;
-        width: 192px;
+        width: 230px;
         height: 387px;
         border-radius: 18px 18px 12px 12px;
         background: var(--card-background-color, #fff);
@@ -216,8 +216,8 @@
 
       @media (max-width: 420px) {
         .fridge-photo-frame {
-          width: 176px;
-          height: 355px;
+          width: 211px;
+          height: 387px;
         }
       }
     `}};lt=mt(ye),P=$t(lt,0,"HaFridgeCard",Lt,P),_t(lt,1,P);customElements.get(T)||customElements.define(T,P);window.customCards=window.customCards??[];window.customCards.some(r=>r.type===T)||window.customCards.push({type:T,name:"HA Fridge Card",description:"Fridge and freezer temperatures with multiple fridge layout options.",preview:!0});})();

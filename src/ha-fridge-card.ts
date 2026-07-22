@@ -359,7 +359,7 @@ export class HaFridgeCard extends LitElement {
 
       .fridge-photo-frame {
         position: relative;
-        width: 192px;
+        width: 230px;
         height: 387px;
         border-radius: 18px 18px 12px 12px;
         background: var(--card-background-color, #fff);
@@ -450,8 +450,8 @@ export class HaFridgeCard extends LitElement {
 
       @media (max-width: 420px) {
         .fridge-photo-frame {
-          width: 176px;
-          height: 355px;
+          width: 211px;
+          height: 387px;
         }
       }
     `;
