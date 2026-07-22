@@ -52,6 +52,7 @@ function computeZones(layout: Layout): { freezer?: Zone; fridge?: Zone } {
 function buildSvg(layout: Layout): unknown {
   const H = 363;
   const Y0 = 12;
+  const X0 = 12;
 
   switch (layout) {
     case "freezer": {
