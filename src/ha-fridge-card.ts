@@ -131,7 +131,7 @@ function buildSvg(layout: Layout, ratio: number, showDispenser: boolean): unknow
         ` : nothing}
         <rect x="96" y="${Y0}" width="2" height="${fH}" rx="1" fill="#D6DCE4" />
         <rect x="98" y="${Y0}" width="${halfW}" height="${fH}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="8" />
-        <rect x="100" y="${Y0 + Math.round(fH / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
+        <rect x="94" y="${Y0 + Math.round(fH / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
         <rect x="14" y="${sep}" width="164" height="2" rx="1" fill="#D6DCE4" />
         <rect x="16" y="${sep + 2}" width="160" height="${fh}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="8" />
         <rect x="76" y="${sep + 10}" width="36" height="4" rx="2" fill="#B0B8C4" />
@@ -147,7 +147,7 @@ function buildSvg(layout: Layout, ratio: number, showDispenser: boolean): unknow
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
         <rect x="4" y="4" width="184" height="379" rx="12" fill="#ECEFF3" stroke="#C8CED6" stroke-width="8" />
         <rect x="12" y="${Y0}" width="${fw}" height="${H}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="8" />
-        <rect x="${lx - 8}" y="${Y0 + Math.round(H / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
+        <rect x="${lx - 4}" y="${Y0 + Math.round(H / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
         ${showDispenser ? html`
           <rect x="${12 + Math.round(fw / 2) - 20}" y="${Y0 + 40}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="8" />
           <rect x="${12 + Math.round(fw / 2) - 16}" y="${Y0 + 44}" width="32" height="20" rx="3" fill="#2C2C3A" />
