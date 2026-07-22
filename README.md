@@ -63,16 +63,6 @@ card_height: 387
 
 \* At least one entity is required.
 
-## Development
-
-```bash
-npm install
-npm run build       # one-time build
-npm run watch       # rebuild on file changes
-```
-
-The bundled output is written to `dist/ha-fridge-card.js`.
-
 ## License
 
 MIT
