@@ -57,13 +57,21 @@ function buildSvg(layout: Layout, ratio: number, dispenser: boolean): unknown {
   const line = (x1: number, y1: number, x2: number, y2: number) =>
     html`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#BCC5CF" stroke-width="1.5" />`;
 
+  const disp = (dx: number, dy: number) => html`
+    <rect x="${dx}" y="${dy}" width="36" height="46" rx="4" fill="#D0D5DC" />
+    <rect x="${dx + 4}" y="${dy + 4}" width="28" height="18" rx="3" fill="#1a1a2e" />
+    <rect x="${dx + 13}" y="${dy + 26}" width="10" height="14" rx="2" fill="#8A919A" />
+    <rect x="${dx + 10}" y="${dy + 40}" width="16" height="4" rx="2" fill="#B8C2CC" />`;
+
   switch (layout) {
     case "freezer": {
       const h = H;
+      const dc = 10 + Math.round(172 / 2) - 18;
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
         ${outer}
         <rect x="10" y="${Y0}" width="172" height="${h}" rx="10" fill="#F4F6F8" />
-        ${handle(26, Y0 + Math.round(h / 2) - 24)}
+        ${handle(26, Y0 + Math.round(h / 2) + 30)}
+        ${dispenser ? disp(dc, Y0 + Math.round(h / 2) - 46) : nothing}
       </svg>`;
     }
 
@@ -71,6 +79,7 @@ function buildSvg(layout: Layout, ratio: number, dispenser: boolean): unknown {
       const fh = Math.round(H * r);
       const fH = Math.round(H * (1 - r)) - 4;
       const sep = Y0 + fh;
+      const dc = 10 + Math.round(172 / 2) - 18;
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
         ${outer}
         <rect x="10" y="${Y0}" width="172" height="${fh}" rx="10" fill="#F4F6F8" />
@@ -78,31 +87,38 @@ function buildSvg(layout: Layout, ratio: number, dispenser: boolean): unknown {
         ${line(10, sep, 182, sep)}
         <rect x="10" y="${sep + 4}" width="172" height="${fH}" rx="10" fill="#F7F9FB" />
         ${handle(26, sep + 4 + Math.round(fH / 2) - 30)}
+        ${dispenser ? disp(dc, sep + 4 + Math.round(fH / 2) - 23) : nothing}
       </svg>`;
     }
 
-    case "inverted":
-    case "french_door": {
+    case "inverted": {
       const fH = Math.round(H * (1 - r)) - 4;
       const fh = Math.round(H * r);
       const sep = Y0 + fH;
-      if (layout === "french_door") {
-        const halfW = 82;
-        return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
-          ${outer}
-          <rect x="10" y="${Y0}" width="${halfW}" height="${fH}" rx="10" fill="#F7F9FB" />
-          ${handle(80, Y0 + Math.round(fH / 2) - 24)}
-          <rect x="${10 + halfW + 8}" y="${Y0}" width="${halfW}" height="${fH}" rx="10" fill="#F7F9FB" />
-          ${handle(10 + halfW + 6, Y0 + Math.round(fH / 2) - 24)}
-          ${line(10, sep, 182, sep)}
-          <rect x="10" y="${sep + 4}" width="172" height="${fh}" rx="10" fill="#F4F6F8" />
-          ${handle(26, sep + 4 + Math.round(fh / 2) - 24)}
-        </svg>`;
-      }
+      const dc = 10 + Math.round(172 / 2) - 18;
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
         ${outer}
         <rect x="10" y="${Y0}" width="172" height="${fH}" rx="10" fill="#F7F9FB" />
         ${handle(26, Y0 + Math.round(fH / 2) - 30)}
+        ${dispenser ? disp(dc, Y0 + Math.round(fH / 2) - 23) : nothing}
+        ${line(10, sep, 182, sep)}
+        <rect x="10" y="${sep + 4}" width="172" height="${fh}" rx="10" fill="#F4F6F8" />
+        ${handle(26, sep + 4 + Math.round(fh / 2) - 24)}
+      </svg>`;
+    }
+
+    case "french_door": {
+      const fH = Math.round(H * (1 - r)) - 4;
+      const fh = Math.round(H * r);
+      const sep = Y0 + fH;
+      const halfW = 82;
+      return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
+        ${outer}
+        <rect x="10" y="${Y0}" width="${halfW}" height="${fH}" rx="10" fill="#F7F9FB" />
+        ${handle(80, Y0 + Math.round(fH / 2) - 24)}
+        ${dispenser ? disp(10 + Math.round(halfW / 2) - 18, Y0 + Math.round(fH / 2) - 23) : nothing}
+        <rect x="${10 + halfW + 8}" y="${Y0}" width="${halfW}" height="${fH}" rx="10" fill="#F7F9FB" />
+        ${handle(10 + halfW + 6, Y0 + Math.round(fH / 2) - 24)}
         ${line(10, sep, 182, sep)}
         <rect x="10" y="${sep + 4}" width="172" height="${fh}" rx="10" fill="#F4F6F8" />
         ${handle(26, sep + 4 + Math.round(fh / 2) - 24)}
@@ -113,18 +129,11 @@ function buildSvg(layout: Layout, ratio: number, dispenser: boolean): unknown {
       const fw = Math.round(172 * r);
       const lw = 172 - fw - 2;
       const lx = 8 + fw + 2;
-      const dispX = 8 + Math.round(fw / 2) - 18;
-      const dispY = Y0 + 40;
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
         ${outer}
         <rect x="8" y="${Y0}" width="${fw}" height="${H}" rx="10" fill="#F4F6F8" />
         ${handle(8 + Math.round(fw / 2) - 3, Y0 + Math.round(H / 2) + 40)}
-        ${dispenser ? html`
-          <rect x="${dispX}" y="${dispY}" width="36" height="46" rx="4" fill="#D0D5DC" />
-          <rect x="${dispX + 4}" y="${dispY + 4}" width="28" height="18" rx="3" fill="#1a1a2e" />
-          <rect x="${dispX + 13}" y="${dispY + 26}" width="10" height="14" rx="2" fill="#8A919A" />
-          <rect x="${dispX + 10}" y="${dispY + 40}" width="16" height="4" rx="2" fill="#B8C2CC" />
-        ` : nothing}
+        ${dispenser ? disp(8 + Math.round(fw / 2) - 18, Y0 + 40) : nothing}
         ${line(lx - 1, Y0, lx - 1, Y0 + H)}
         <rect x="${lx}" y="${Y0}" width="${lw}" height="${H}" rx="10" fill="#F7F9FB" />
         ${handle(lx + Math.round(lw / 2) - 3, Y0 + Math.round(H / 2) - 25)}
