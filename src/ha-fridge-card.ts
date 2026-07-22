@@ -167,7 +167,7 @@ export class HaFridgeCard extends LitElement {
               options: [
                 { value: "default", label: "Freezer on top" },
                 { value: "inverted", label: "Fridge on top" },
-                { value: "dual_door", label: "Side by side (40/60)" },
+                { value: "dual_door", label: "Side by side" },
                 { value: "french_door", label: "French door" },
                 { value: "freezer", label: "Freezer only" },
               ],
