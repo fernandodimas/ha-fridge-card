@@ -44,7 +44,7 @@ function computeZones(layout: Layout, ratio: number): { freezer?: Zone; fridge?:
   }
 }
 
-function buildSvg(layout: Layout, ratio: number, dispenser: boolean): unknown {
+function buildSvg(layout: Layout, ratio: number, showDispenser: boolean): unknown {
   const r = ratio / 100;
   const H = 365;
   const Y0 = 12;
@@ -53,11 +53,11 @@ function buildSvg(layout: Layout, ratio: number, dispenser: boolean): unknown {
     case "freezer": {
       const cy = Y0 + Math.round(H / 2) - 26;
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
-        <rect x="4" y="4" width="184" height="379" rx="12" fill="#ECEFF3" stroke="#C8CED6" stroke-width="1.5" />
-        <rect x="16" y="${Y0}" width="160" height="${H}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="4" y="4" width="184" height="379" rx="12" fill="#ECEFF3" stroke="#C8CED6" stroke-width="8" />
+        <rect x="16" y="${Y0}" width="160" height="${H}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="8" />
         <rect x="24" y="${Y0 + Math.round(H / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
-        ${dispenser ? html`
-          <rect x="76" y="${cy}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="0.8" />
+        ${showDispenser ? html`
+          <rect x="76" y="${cy}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="8" />
           <rect x="80" y="${cy + 4}" width="32" height="20" rx="3" fill="#2C2C3A" />
           <rect x="90" y="${cy + 28}" width="12" height="14" rx="2" fill="#8A919A" />
           <rect x="86" y="${cy + 44}" width="20" height="5" rx="2" fill="#A0A8B4" />
@@ -73,14 +73,14 @@ function buildSvg(layout: Layout, ratio: number, dispenser: boolean): unknown {
       const sep = Y0 + fh;
       const cy = sep + 2 + Math.round(fH / 2) - 26;
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
-        <rect x="4" y="4" width="184" height="379" rx="12" fill="#ECEFF3" stroke="#C8CED6" stroke-width="1.5" />
-        <rect x="16" y="${Y0}" width="160" height="${fh}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="4" y="4" width="184" height="379" rx="12" fill="#ECEFF3" stroke="#C8CED6" stroke-width="8" />
+        <rect x="16" y="${Y0}" width="160" height="${fh}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="8" />
         <rect x="24" y="${Y0 + Math.round(fh / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
         <rect x="14" y="${sep}" width="164" height="2" rx="1" fill="#D6DCE4" />
-        <rect x="16" y="${sep + 2}" width="160" height="${fH}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="16" y="${sep + 2}" width="160" height="${fH}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="8" />
         <rect x="24" y="${sep + 2 + Math.round(fH / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
-        ${dispenser ? html`
-          <rect x="76" y="${cy}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="0.8" />
+        ${showDispenser ? html`
+          <rect x="76" y="${cy}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="8" />
           <rect x="80" y="${cy + 4}" width="32" height="20" rx="3" fill="#2C2C3A" />
           <rect x="90" y="${cy + 28}" width="12" height="14" rx="2" fill="#8A919A" />
           <rect x="86" y="${cy + 44}" width="20" height="5" rx="2" fill="#A0A8B4" />
@@ -96,17 +96,17 @@ function buildSvg(layout: Layout, ratio: number, dispenser: boolean): unknown {
       const sep = Y0 + fH;
       const cy = Y0 + Math.round(fH / 2) - 26;
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
-        <rect x="4" y="4" width="184" height="379" rx="12" fill="#ECEFF3" stroke="#C8CED6" stroke-width="1.5" />
-        <rect x="16" y="${Y0}" width="160" height="${fH}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="4" y="4" width="184" height="379" rx="12" fill="#ECEFF3" stroke="#C8CED6" stroke-width="8" />
+        <rect x="16" y="${Y0}" width="160" height="${fH}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="8" />
         <rect x="24" y="${Y0 + Math.round(fH / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
-        ${dispenser ? html`
-          <rect x="76" y="${cy}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="0.8" />
+        ${showDispenser ? html`
+          <rect x="76" y="${cy}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="8" />
           <rect x="80" y="${cy + 4}" width="32" height="20" rx="3" fill="#2C2C3A" />
           <rect x="90" y="${cy + 28}" width="12" height="14" rx="2" fill="#8A919A" />
           <rect x="86" y="${cy + 44}" width="20" height="5" rx="2" fill="#A0A8B4" />
         ` : nothing}
         <rect x="14" y="${sep}" width="164" height="2" rx="1" fill="#D6DCE4" />
-        <rect x="16" y="${sep + 2}" width="160" height="${fh}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="16" y="${sep + 2}" width="160" height="${fh}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="8" />
         <rect x="24" y="${sep + 2 + Math.round(fh / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
         <rect x="20" y="381" width="10" height="6" rx="2" fill="#C8CED6" />
         <rect x="162" y="381" width="10" height="6" rx="2" fill="#C8CED6" />
@@ -120,20 +120,20 @@ function buildSvg(layout: Layout, ratio: number, dispenser: boolean): unknown {
       const halfW = 78;
       const cy = Y0 + Math.round(fH / 2) - 26;
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
-        <rect x="4" y="4" width="184" height="379" rx="12" fill="#ECEFF3" stroke="#C8CED6" stroke-width="1.5" />
-        <rect x="16" y="${Y0}" width="${halfW}" height="${fH}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="4" y="4" width="184" height="379" rx="12" fill="#ECEFF3" stroke="#C8CED6" stroke-width="8" />
+        <rect x="16" y="${Y0}" width="${halfW}" height="${fH}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="8" />
         <rect x="82" y="${Y0 + Math.round(fH / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
-        ${dispenser ? html`
-          <rect x="35" y="${Y0 + Math.round(fH / 2) - 26}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="0.8" />
+        ${showDispenser ? html`
+          <rect x="35" y="${Y0 + Math.round(fH / 2) - 26}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="8" />
           <rect x="39" y="${Y0 + Math.round(fH / 2) - 22}" width="32" height="20" rx="3" fill="#2C2C3A" />
           <rect x="49" y="${Y0 + Math.round(fH / 2) + 2}" width="12" height="14" rx="2" fill="#8A919A" />
           <rect x="45" y="${Y0 + Math.round(fH / 2) + 18}" width="20" height="5" rx="2" fill="#A0A8B4" />
         ` : nothing}
         <rect x="96" y="${Y0}" width="2" height="${fH}" rx="1" fill="#D6DCE4" />
-        <rect x="98" y="${Y0}" width="${halfW}" height="${fH}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="98" y="${Y0}" width="${halfW}" height="${fH}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="8" />
         <rect x="100" y="${Y0 + Math.round(fH / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
         <rect x="14" y="${sep}" width="164" height="2" rx="1" fill="#D6DCE4" />
-        <rect x="16" y="${sep + 2}" width="160" height="${fh}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="16" y="${sep + 2}" width="160" height="${fh}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="8" />
         <rect x="76" y="${sep + 10}" width="36" height="4" rx="2" fill="#B0B8C4" />
         <rect x="20" y="381" width="10" height="6" rx="2" fill="#C8CED6" />
         <rect x="162" y="381" width="10" height="6" rx="2" fill="#C8CED6" />
@@ -145,17 +145,17 @@ function buildSvg(layout: Layout, ratio: number, dispenser: boolean): unknown {
       const lw = 160 - fw;
       const lx = 12 + fw + 4;
       return html`<svg class="fridge-svg" viewBox="0 0 192 387" preserveAspectRatio="none">
-        <rect x="4" y="4" width="184" height="379" rx="12" fill="#ECEFF3" stroke="#C8CED6" stroke-width="1.5" />
-        <rect x="12" y="${Y0}" width="${fw}" height="${H}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="4" y="4" width="184" height="379" rx="12" fill="#ECEFF3" stroke="#C8CED6" stroke-width="8" />
+        <rect x="12" y="${Y0}" width="${fw}" height="${H}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="8" />
         <rect x="${lx - 8}" y="${Y0 + Math.round(H / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
-        ${dispenser ? html`
-          <rect x="${12 + Math.round(fw / 2) - 20}" y="${Y0 + 40}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="0.8" />
+        ${showDispenser ? html`
+          <rect x="${12 + Math.round(fw / 2) - 20}" y="${Y0 + 40}" width="40" height="52" rx="4" fill="#C8CED6" stroke="#B0B8C4" stroke-width="8" />
           <rect x="${12 + Math.round(fw / 2) - 16}" y="${Y0 + 44}" width="32" height="20" rx="3" fill="#2C2C3A" />
           <rect x="${12 + Math.round(fw / 2) - 6}" y="${Y0 + 68}" width="12" height="14" rx="2" fill="#8A919A" />
           <rect x="${12 + Math.round(fw / 2) - 10}" y="${Y0 + 84}" width="20" height="5" rx="2" fill="#A0A8B4" />
         ` : nothing}
         <rect x="${lx - 2}" y="${Y0}" width="2" height="${H}" rx="1" fill="#D6DCE4" />
-        <rect x="${lx}" y="${Y0}" width="${lw}" height="${H}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="0.8" />
+        <rect x="${lx}" y="${Y0}" width="${lw}" height="${H}" rx="8" fill="#F5F7FA" stroke="#D6DCE4" stroke-width="8" />
         <rect x="${lx + 4}" y="${Y0 + Math.round(H / 2) - 18}" width="4" height="36" rx="2" fill="#B0B8C4" />
         <rect x="20" y="381" width="10" height="6" rx="2" fill="#C8CED6" />
         <rect x="162" y="381" width="10" height="6" rx="2" fill="#C8CED6" />
@@ -291,11 +291,7 @@ export class HaFridgeCard extends LitElement {
   }
 
   getCardSize() {
-    return 4;
-  }
-
-  getGridOptions() {
-    return { columns: 6, rows: 4, min_columns: 4 };
+    return 3;
   }
 
   // ── Render ─────────────────────────────────────────────────────────────────
@@ -380,17 +376,18 @@ export class HaFridgeCard extends LitElement {
     unitText: string;
     isPlaceholder: boolean;
   }) {
-    return displayState.isPlaceholder ? "temperature placeholder" : "temperature";
+    if (displayState.isPlaceholder) return "temperature placeholder";
+    const num = parseFloat(displayState.stateText.replace(",", "."));
+    if (isNaN(num)) return "temperature";
+    if (num <= -10) return "temperature frozen";
+    if (num <= 0) return "temperature cold";
+    return "temperature mild";
   }
 
-  private cardLabel(showFreezer: boolean, showFridge: boolean) {
-    if (showFreezer && showFridge) return "Fridge and freezer temperatures";
-    if (showFreezer) return "Freezer temperature";
-    return "Fridge temperature";
-  }
-
-  private normalizeLayout(layout: string | undefined): Layout {
-    if (layout && (LAYOUTS as readonly string[]).includes(layout)) return layout as Layout;
+  private normalizeLayout(raw: string | undefined): Layout {
+    if (raw && (LAYOUTS as readonly string[]).includes(raw)) {
+      return raw as Layout;
+    }
     return "default";
   }
 
@@ -412,83 +409,65 @@ export class HaFridgeCard extends LitElement {
     if (!entity) {
       return { stateText: "--", unitText: "", isPlaceholder: true };
     }
-    const rawState = entity.state?.trim();
-    if (!rawState || INVALID_STATES.has(rawState.toLowerCase())) {
+    const state = entity.state;
+    if (INVALID_STATES.has(state)) {
       return { stateText: "--", unitText: "", isPlaceholder: true };
     }
-    const numeric = Number.parseFloat(rawState);
-    const unit = this.getUnit(entity);
-    if (!Number.isNaN(numeric)) {
-      return {
-        stateText: new Intl.NumberFormat(undefined, {
-          minimumFractionDigits: 1,
-          maximumFractionDigits: 1,
-        }).format(numeric),
-        unitText: unit,
-        isPlaceholder: false,
-      };
-    }
-    return { stateText: rawState, unitText: unit, isPlaceholder: false };
-  }
-
-  private getUnit(entity: any) {
     const unit = entity.attributes.unit_of_measurement;
-    return typeof unit === "string" && unit.trim() ? unit : "°C";
+    return { stateText: state, unitText: unit ?? "", isPlaceholder: false };
   }
 
-  // ── Styles ─────────────────────────────────────────────────────────────────
+  private cardLabel(showFreezer: boolean, showFridge: boolean): string {
+    if (showFreezer && showFridge) return "Fridge and freezer temperatures";
+    if (showFreezer) return "Freezer temperature";
+    if (showFridge) return "Fridge temperature";
+    return "Fridge card";
+  }
+
+  // ── Styles ────────────────────────────────────────────────────────────────
 
   static get styles() {
     return css`
       :host {
-        display: block;
+        --fridge-accent: #1a73e8;
       }
 
       ha-card {
-        border-radius: 18px;
-        overflow: hidden;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
       }
 
       .card-shell {
-        display: grid;
-        grid-template-rows: auto 1fr;
-        gap: 18px;
-        padding: 18px;
-        background: var(--card-background-color, #fff);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
       }
 
       .heading {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        padding: 12px 16px 0;
       }
 
       .title {
         margin: 0;
-        font-size: 1.2em;
+        font-size: 1.1em;
         font-weight: 600;
-        color: var(--primary-text-color, #212121);
       }
 
       .body {
+        flex: 1;
         display: flex;
+        align-items: center;
         justify-content: center;
+        padding: 8px 16px 12px;
       }
 
       .fridge {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
+        position: relative;
       }
 
       .fridge-photo-frame {
         position: relative;
-        border-radius: 18px 18px 12px 12px;
-        background: var(--card-background-color, #fff);
-        box-shadow:
-          0 1px 3px rgba(0, 0, 0, 0.08),
-          0 4px 12px rgba(0, 0, 0, 0.06);
         overflow: hidden;
       }
 
