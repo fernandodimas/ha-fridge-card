@@ -19,7 +19,7 @@ Custom [Home Assistant](https://www.home-assistant.io/) Lovelace card for displa
 - **5 layout options** — freezer on top, fridge on top, side by side, french door, freezer only
 - **Split ratio slider** — adjust freezer/fridge proportion from 20% to 80%
 - **Show/hide title** — toggle the card title visibility
-- **Ice dispenser** — optional ice dispenser overlay on the door (works on all layouts)
+- **Ice dispenser** — built-in ice dispenser overlay on the door (all layouts)
 - **Custom labels** — rename freezer and fridge section labels
 - **Resizable** — configurable width and height via slider
 
@@ -53,7 +53,6 @@ fridge_entity: sensor.fridge_temperature
 freezer_label: "Congelador"
 fridge_label: "Geladeira"
 show_title: true
-show_dispenser: true
 split_ratio: 40
 card_width: 230
 card_height: 387
